@@ -6,6 +6,7 @@ planejamento (que superestimam a base em vários pontos).
 **Atualizado em:** 2026-09-08
 **Onda atual:** W1 (fundacao) — parcialmente concluida
 **Bloqueio principal:** W0 nao executada; exige credencial AWS Academy
+**Ambientes:** `prod` unico. `homolog` removido dos 3 repos em 2026-09-08 (era espelho de `prod`).
 
 ---
 
@@ -30,7 +31,7 @@ planejamento (que superestimam a base em vários pontos).
 |---|---|
 | 4 repositorios publicos e ativos | os 4 com `main` populada |
 | Branch protection nos 4 | 1 aprovacao, sem force-push/delecao, stale dismiss, conversation resolution — **comprovadamente bloqueando** (`BLOCKED`/`REVIEW_REQUIRED`) |
-| Environments `homolog`/`prod` | 3 repos de deploy; `prod` exige aprovacao |
+| Environment `prod` | 3 repos de deploy; exige aprovacao (ambiente unico) |
 | Secret scanning + push protection | ativo nos 4 |
 | Sub-gate de seguranca | `.gitignore` cobrindo `*.tfvars`/`*.tfstate` desde o 1o commit |
 | **Contrato de outputs** | 12 outputs; `terraform validate` verde com modulos reais |
@@ -42,7 +43,7 @@ planejamento (que superestimam a base em vários pontos).
 
 | # | Pendencia | De quem depende |
 |---|---|---|
-| 1 | **Preencher os 36 secrets** (placeholder hoje) | pessoa — valores reais |
+| 1 | **Preencher os 18 secrets** (placeholder hoje) | pessoa — valores reais |
 | 2 | **ADR-001 / 002 / 006** | veredictos da W0 |
 | 3 | **Tag `phase3-baseline`** no repo da app, antes da extracao do terraform | pode ser feito agora |
 | 4 | Remover `infra/eks/**` do repo da app apos a extracao | PR coordenado |
@@ -126,8 +127,8 @@ que toca `src/` precisa do agente `tests` na mesma PR, ou o `verify` quebra.
 
 ### 6. Credencial de ~4h (MEDIO — operacional)
 
-18 valores AWS a renovar por janela de trabalho. Um `apply` iniciado perto do fim falha
-no meio e deixa **state parcial**.
+9 valores AWS a renovar por janela de trabalho (3 secrets × 3 repos). Um `apply` iniciado
+perto do fim falha no meio e deixa **state parcial**.
 
 ---
 

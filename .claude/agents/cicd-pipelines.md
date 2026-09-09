@@ -76,8 +76,8 @@ bloco temporário comentado" como se fosse um ajuste — não é. Há um esquele
 serve de mapa dos nomes de arquivo, e nada mais. Além disso os arquivos que ele referencia
 (`k8s/00-namespace.yaml` … `k8s/30-hpa.yaml`) **não existem** na branch atual — `k8s/` só está
 na branch não mergeada `feat/dev3-kubernetes`, e o `k8s-workloads` vai convertê-los para
-Kustomize na W2. Escreva o `cd.yml` novo contra `k8s/overlays/{homolog,prod}`, não contra os
-nomes comentados.
+Kustomize na W2. Escreva o `cd.yml` novo contra `k8s/overlays/prod` (ambiente unico), não
+contra os nomes comentados.
 
 ### Gates do build (verificados no `pom.xml`)
 
@@ -203,8 +203,7 @@ Lambda tem de ser aceito pelo `JwtTokenService` da app — é o desempate do ris
 
 Regras que o G6 cobra:
 
-- `develop` → `homolog` **automático**
-- `main` → `prod` **com aprovação** (Environment `prod` do `repo-governance`)
+- `main` → `prod` **com aprovação** (Environment `prod` do `repo-governance`) — ambiente unico nesta fase; sem `homolog`
 - Tag de imagem `sha-<sha>` **imutável** — build uma vez, **promove** a mesma imagem, nunca
   reconstrói. `latest` é conveniência; deploy referencia SHA
 - `kubectl rollout status` + `kubectl rollout undo` no fracasso
@@ -230,15 +229,15 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'homolog' }}
+    environment: prod
     concurrency:
       # Um deploy por ambiente. Sem cancel-in-progress: cancelar um rollout no meio
       # deixa o cluster em estado indefinido — enfileire.
-      group: deploy-${{ github.ref == 'refs/heads/main' && 'prod' || 'homolog' }}
+      group: deploy-prod
       cancel-in-progress: false
     env:
       IMAGE: ghcr.io/${{ github.repository_owner }}/workshop-service
-      OVERLAY: ${{ github.ref == 'refs/heads/main' && 'prod' || 'homolog' }}
+      OVERLAY: prod
     steps:
       - uses: actions/checkout@v4
 
@@ -299,7 +298,7 @@ Notas de decisão embutidas acima, todas deliberadas:
 - **`aws eks update-kubeconfig` em vez de `KUBECONFIG_B64`.** O `cd.yml` atual depende de um
   secret com o kubeconfig inteiro colado à mão. Com credencial AWS já presente, derivar o
   kubeconfig do cluster é menos frágil e não versiona um artefato de acesso.
-- **`environment:` dinâmico** é o que faz o gate de aprovação do `prod` valer. Nunca deixe
+- **`environment: prod` (fixo)** é o que faz o gate de aprovação valer. Nunca deixe
   comentado como está hoje na linha 24 do `cd.yml`.
 - **`cancel-in-progress: false`** no deploy, ao contrário da CI.
 
@@ -315,7 +314,7 @@ permissions: { contents: read, pull-requests: write }
 jobs:
   plan:
     runs-on: ubuntu-latest
-    environment: homolog          # só para pegar as credenciais
+    environment: prod             # só para pegar as credenciais
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
@@ -341,15 +340,15 @@ jobs:
 
 ```yaml
 # terraform-apply.yml — gate de aprovação obrigatório
-on: { workflow_dispatch: { inputs: { ambiente: { required: true, type: choice, options: [homolog, prod] } } } }
+on: { workflow_dispatch: {} }   # ambiente unico: prod (sem input de ambiente)
 permissions: { contents: read }
 jobs:
   apply:
     runs-on: ubuntu-latest
     timeout-minutes: 40           # EKS leva ~15-20 min
-    environment: ${{ inputs.ambiente }}   # 'prod' exige aprovação → é o que o G6 filma bloqueado
+    environment: prod            # exige aprovação → é o que o G6 filma bloqueado
     concurrency:
-      group: tf-apply-${{ inputs.ambiente }}
+      group: tf-apply-prod
       cancel-in-progress: false   # NUNCA cancele um apply em andamento
     steps:
       - run: aws sts get-caller-identity   # credencial fresca antes dos 20 min de EKS
@@ -371,7 +370,7 @@ on:
 jobs:
   destroy:
     if: inputs.confirmacao == 'DESTRUIR'
-    environment: ${{ inputs.ambiente }}   # aprovação também no destroy
+    environment: prod                     # aprovação também no destroy (ambiente unico)
 ```
 
 No repo do **banco**, snapshot antes de qualquer ação destrutiva (doc 07) e nunca
@@ -396,7 +395,7 @@ Rollback de Lambda é mover alias, não redeployar. Por isso publicar versão é
 
       - name: Move o alias do ambiente para a nova versão
         env:
-          ALIAS: ${{ github.ref == 'refs/heads/main' && 'prod' || 'homolog' }}
+          ALIAS: prod
         run: |
           # Guarda a versão anterior: é o rollback.
           ANTERIOR=$(aws lambda get-alias --function-name workshop-auth-cpf \
@@ -499,8 +498,8 @@ grep -n "No-op\|# *kubectl\|# *push:" .github/workflows/cd.yml && echo "FALHA: s
 ```
 
 - [ ] 4 repos com pipeline verde chegando a **deploy/plan**, não só a build
-- [ ] `develop` → homolog automático; `main` → prod com aprovação
-- [ ] Tag `sha-` imutável promovida (a mesma imagem em homolog e prod, sem rebuild)
+- [ ] `main` → prod com aprovação (ambiente unico)
+- [ ] Tag `sha-` imutável promovida (build uma vez, promove a mesma imagem, sem rebuild)
 - [ ] `rollout status` verde e `rollout undo` **testado** (doc 07 exige rollback testado)
 - [ ] Terraform: plan automático, apply com gate, destroy manual e separado
 - [ ] Smoke test pós-deploy pela URL do Gateway (prova de deploy real)
@@ -519,7 +518,7 @@ gh api "repos/$ORG/workshop-service/actions/runs?status=success&branch=main" \
    nomes dos jobs com o `repo-governance`.
 3. Na W4-A, package + deploy da Lambda com `--publish` e alias por ambiente. O alias anterior
    é o rollback — registre-o no log do run.
-4. Na W6, **escrever** o `cd.yml` novo do zero contra `k8s/overlays/{homolog,prod}`. Não
+4. Na W6, **escrever** o `cd.yml` novo do zero contra `k8s/overlays/prod` (ambiente unico). Não
    descomentar os blocos antigos. Verificar que nenhum step "No-op" sobrou.
 5. Sempre injetar `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` + **`AWS_SESSION_TOKEN`** de
    Environment secret, e validar com `aws sts get-caller-identity` **antes** de operações longas.

@@ -2,7 +2,7 @@
 
 ## Responsabilidade
 Criar e governar os repositórios da Fase 3 via `gh` CLI: criação dos 3 repos novos + `soat-architecture`,
-branch protection, required checks, GitHub Environments `homolog`/`prod`, secrets por ambiente e secret
+branch protection, required checks, GitHub Environment `prod` (ambiente unico nesta fase), secrets por ambiente e secret
 scanning. Também produz as **evidências** de governança exigidas pelos gates G1 e G6.
 
 Este agente configura **settings de repositório**. Não escreve código nem conteúdo de workflow.
@@ -42,7 +42,7 @@ O preço dessa decisão é que **todo o conteúdo fica exposto**. Daí o sub-gat
 - `gh repo create` dos 3 repos novos + `soat-architecture`
 - Branch protection / rulesets nos 4 repos
 - Required status checks (os **nomes** dos checks; o conteúdo dos jobs é do `cicd-pipelines`)
-- GitHub Environments `homolog` e `prod`, com reviewers de aprovação
+- GitHub Environment `prod` (ambiente unico), com reviewer de aprovação
 - Secrets de repo e de Environment
 - Secret scanning / push protection
 - Tag `phase3-baseline` no repo da app
@@ -230,8 +230,9 @@ protect workshop-auth-serverless  main "build-and-test" "terraform-validate"
 justamente para quem faria o push direto. O G6 exige "histórico só por PR" — provar isso com
 `enforce_admins: false` é frágil.
 
-Se o time adotar `develop` como homologação (recomendado pelo doc 07), proteja `develop`
-também, com os mesmos checks e 1 aprovação.
+Nesta fase há apenas o ambiente `prod`. O fluxo `develop`→homologação (previsto no doc 07) fica
+**adiado, não adotado agora**; se um dia for adotado, `develop` deve ser protegida com os mesmos
+checks e 1 aprovação.
 
 ### Verificação / evidência (G1)
 
@@ -250,13 +251,10 @@ done
 
 ## Padrão: Environments e secrets
 
-Dois Environments por repo que faz deploy: `homolog` e `prod`. Só `prod` tem gate de aprovação —
+Um único Environment por repo que faz deploy: `prod`. Ele tem o gate de aprovação —
 é esse gate que o G6 exige ver **bloqueando** um apply.
 
 ```bash
-# Environment de homologação: sem reviewers, deploy automático após merge em develop
-gh api -X PUT "repos/$ORG/$REPO/environments/homolog"
-
 # Environment de produção: exige aprovação humana
 USER_ID=$(gh api users/<login-do-aprovador> --jq .id)
 gh api -X PUT "repos/$ORG/$REPO/environments/prod" --input - <<JSON
@@ -277,17 +275,15 @@ JSON
 ```bash
 set_env_secret() { gh secret set "$2" --repo "$ORG/$1" --env "$3" --body "$4"; }
 
-for ENV in homolog prod; do
-  # AWS Academy: os TRÊS são obrigatórios. A credencial é temporária (~4h) e
-  # AWS_SESSION_TOKEN não é opcional — sem ele o provider AWS falha na autenticação.
-  set_env_secret "$REPO" AWS_ACCESS_KEY_ID     "$ENV" "$AKID"
-  set_env_secret "$REPO" AWS_SECRET_ACCESS_KEY "$ENV" "$SECRET"
-  set_env_secret "$REPO" AWS_SESSION_TOKEN     "$ENV" "$TOKEN"
+# AWS Academy: os TRÊS são obrigatórios. A credencial é temporária (~4h) e
+# AWS_SESSION_TOKEN não é opcional — sem ele o provider AWS falha na autenticação.
+set_env_secret "$REPO" AWS_ACCESS_KEY_ID     prod "$AKID"
+set_env_secret "$REPO" AWS_SECRET_ACCESS_KEY prod "$SECRET"
+set_env_secret "$REPO" AWS_SESSION_TOKEN     prod "$TOKEN"
 
-  # JWT: MESMO valor para app e Lambda no MESMO ambiente (doc 07). Valores
-  # DIFERENTES entre homolog e prod. Nunca o valor rotacionado-para-fora d3f8a1c2…f2a5.
-  set_env_secret "$REPO" JWT_SECRET "$ENV" "$(openssl rand -hex 32)"
-done
+# JWT: MESMO valor para app e Lambda no ambiente `prod` (doc 07).
+# Nunca o valor rotacionado-para-fora d3f8a1c2…f2a5.
+set_env_secret "$REPO" JWT_SECRET prod "$(openssl rand -hex 32)"
 
 # Observabilidade (consumido pelo observability-platform)
 set_env_secret "$REPO" GRAFANA_CLOUD_OTLP_ENDPOINT prod "$GRAFANA_ENDPOINT"
@@ -337,7 +333,7 @@ chegar ao histórico público.
 - [ ] 4 URLs ativas e públicas
 - [ ] Branch protection capturada como evidência (`evidencias/g1-protection-*.json`)
 - [ ] Tag `phase3-baseline` criada **antes** da extração do terraform
-- [ ] Environments `homolog`/`prod` criados; `prod` com reviewer e `protected_branches`
+- [ ] Environment `prod` criado, com reviewer e `protected_branches` (ambiente unico)
 - [ ] `gh secret list --env prod` mostra `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
       `AWS_SESSION_TOKEN`, `JWT_SECRET`, `GRAFANA_*` — só nomes
 - [ ] Secret scanning + push protection habilitados, 0 alertas
@@ -389,7 +385,7 @@ gh api "repos/$ORG/workshop-infra-kubernetes/actions/runs/<ID>/pending_deploymen
 4. Aplicar branch protection nos 4 repos com `enforce_admins: true`. Os nomes dos required checks
    vêm do `cicd-pipelines` — se os workflows dele ainda não existirem, crie a proteção sem
    contexts e adicione os checks na W6.
-5. Criar Environments `homolog`/`prod`; só `prod` com reviewer e `protected_branches`.
+5. Criar Environment `prod` (ambiente unico), com reviewer e `protected_branches`.
 6. Popular secrets por Environment. `AWS_SESSION_TOKEN` sempre. `JWT_SECRET` novo e igual entre
    app e Lambda no mesmo ambiente.
 7. Habilitar secret scanning + push protection.
