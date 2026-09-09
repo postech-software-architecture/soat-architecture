@@ -1,5 +1,8 @@
 # Arquitetura — Fase 3
 
+> **[ESTADO.md](ESTADO.md)** — o que esta pronto, o que falta e os riscos abertos.
+> Levantamento verificado no codigo, atualizado a cada onda.
+
 Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 **4 repositorios** da entrega; cada um mantem o seu proprio README.
 
@@ -36,6 +39,12 @@ Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 | Gate | Conteudo |
 |---|---|
 | [G1](evidence/g1/README.md) | Branch protection, Environments, secret scanning |
+
+## Runbooks
+
+| Runbook | Conteudo |
+|---|---|
+| [secrets.md](runbooks/secrets.md) | Inventario dos 36 secrets, como preencher, rotacao |
 
 ## Ondas e gates
 
