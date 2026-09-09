@@ -1,0 +1,66 @@
+name: CI — Documentacao
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Links, JSON e higiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Links relativos quebrados sao o defeito mais comum aqui: o diagrama e o
+      # ADR se movem de pasta e o indice fica apontando para o nada.
+      - name: Links relativos
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            while IFS= read -r link; do
+              [ -z "$link" ] && continue
+              case "$link" in http*|\#*|mailto:*) continue;; esac
+              target="$(dirname "$f")/${link%%#*}"
+              if [ ! -e "$target" ]; then
+                echo "::error file=$f::link quebrado: $link"
+                fail=1
+              fi
+            done < <(grep -oE '\]\([^)]+\)' "$f" | sed 's/^](//;s/)$//')
+          done < <(find . -name '*.md' -not -path './.git/*')
+          exit $fail
+
+      # As evidencias do G1/G5 sao JSON capturado de API. JSON invalido = evidencia
+      # que nao abre na correcao.
+      - name: JSON das evidencias
+        run: |
+          fail=0
+          while IFS= read -r j; do
+            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$j" \
+              || { echo "::error file=$j::JSON invalido"; fail=1; }
+          done < <(find . -name '*.json' -not -path './.git/*')
+          exit $fail
+
+      # O repo e publico: nenhum segredo pode entrar junto com a evidencia.
+      - name: Higiene de segredos nas evidencias
+        run: |
+          if grep -rIEn 'AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}' --include='*' . \
+               --exclude-dir=.git; then
+            echo "::error::possivel AWS access key versionada"
+            exit 1
+          fi
+          # CPF completo em evidencia: o plano exige redaction via Documento.mascarado()
+          if grep -rIEn '"cpf"[[:space:]]*:[[:space:]]*"[0-9]{11}"' --include='*.json' . \
+               --exclude-dir=.git; then
+            echo "::error::CPF completo em evidencia — usar valor mascarado"
+            exit 1
+          fi
+          echo "OK: nenhum segredo aparente"
