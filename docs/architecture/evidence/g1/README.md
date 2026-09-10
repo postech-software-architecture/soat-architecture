@@ -3,6 +3,11 @@
 Capturas da API do GitHub feitas apos a configuracao da onda W1.
 Coletadas em 2026-09-08 via `gh api`.
 
+> **Nota (2026-09-08, pos-coleta):** os ambientes foram consolidados para `prod`
+> unico; o Environment `homolog` foi removido dos 3 repos (era espelho de `prod`).
+> Esta evidencia reflete o estado **no momento da coleta do G1** e e mantida como
+> snapshot — nao foi reescrita. Estado corrente em [ESTADO.md](../../ESTADO.md).
+
 ## Criterios do G1
 
 | Criterio | Estado | Evidencia |

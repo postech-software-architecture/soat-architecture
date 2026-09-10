@@ -1,6 +1,6 @@
 # Runbook — Secrets e credenciais
 
-**Estado atual: todos os 36 secrets existem com o placeholder
+**Estado atual: todos os 18 secrets existem com o placeholder
 `PREENCHER_VALOR_REAL_AQUI`.** Nenhum valor real foi configurado, e **nada foi
 provisionado na AWS**.
 
@@ -17,8 +17,9 @@ provisionado na AWS**.
 | `GRAFANA_INSTANCE_ID` | sim | — | sim | Grafana Cloud → OTLP |
 | `GRAFANA_API_TOKEN` | sim | — | sim | Grafana Cloud → token de ingest |
 
-Todos em **Environment** (`homolog` e `prod`), nao em repo — assim `prod` herda o gate
-de aprovacao. 36 secrets no total (3 repos × 2 ambientes × 4–8 secrets).
+Todos em **Environment** (`prod`), nao em repo — assim herdam o gate
+de aprovacao. 18 secrets no total (3 repos × 4–8 secrets). Ambiente unico
+`prod` nesta fase; `homolog` foi removido em 2026-09-08 (era espelho de `prod`).
 
 ## Duas travas contra apply acidental
 
@@ -41,17 +42,17 @@ Nunca cole credencial em chat, issue, PR ou log. Duas vias:
 ```bash
 gh secret set AWS_SESSION_TOKEN \
   --repo postech-software-architecture/workshop-infra-kubernetes \
-  --env homolog < token.txt
+  --env prod < token.txt
 rm token.txt
 ```
 
-**UI**: Settings → Environments → `homolog` → Environment secrets.
+**UI**: Settings → Environments → `prod` → Environment secrets.
 
 ## Credencial do Academy expira em ~4h
 
 E a restricao central do projeto. Consequencias praticas:
 
-- Renovar os 3 secrets AWS **nos 3 repos** antes de cada janela de trabalho (18 valores)
+- Renovar os 3 secrets AWS **nos 3 repos** antes de cada janela de trabalho (9 valores)
 - Um `apply` iniciado perto do fim da janela **falha no meio** e deixa state parcial
 - O `AWS_SESSION_TOKEN` e obrigatorio: credencial do Academy nao funciona sem ele
 
