@@ -1,8 +1,9 @@
 # Runbook — Secrets e credenciais
 
-**Estado atual: todos os 18 secrets existem com o placeholder
-`PREENCHER_VALOR_REAL_AQUI`.** Nenhum valor real foi configurado, e **nada foi
-provisionado na AWS**.
+**Estado documentado da configuracao:** os 18 secrets dos Environments foram criados
+com placeholder e as CIs permanecem travadas por `AWS_CREDENTIALS_READY=false`.
+O EKS ja foi aplicado e validado manualmente com credenciais temporarias; isso nao
+significa que o cluster continue ativo nem que os secrets da CI estejam preenchidos.
 
 ## Inventario
 
@@ -47,6 +48,16 @@ rm token.txt
 ```
 
 **UI**: Settings → Environments → `prod` → Environment secrets.
+
+Depois de preencher, valide sem revelar valores:
+
+```bash
+gh secret list --repo <org>/<repo> --env prod
+gh variable get AWS_CREDENTIALS_READY --repo <org>/<repo>
+```
+
+Ative `AWS_CREDENTIALS_READY=true` apenas no inicio da janela planejada e retorne a
+`false` ao final. A listagem do GitHub comprova nomes e datas, nunca o conteudo.
 
 ## Credencial do Academy expira em ~4h
 

@@ -23,7 +23,7 @@ Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 | ADR-002 | Topologia do API Gateway (VPC Link + NLB interno vs. fallback) | pendente (spike da W0) |
 | ADR-003 | Segregacao em 4 repositorios | pendente |
 | ADR-004 | **Contrato JWT** — claims, algoritmo, dois emissores | pendente (pre-condicao da W4) |
-| ADR-005 | Coordenacao de state entre repos (S3 remoto vs. artifact) | pendente (spike da W0) |
+| ADR-005 | Coordenacao de state entre repos (S3 remoto vs. artifact) | parcial (S3 permitido; recursos definitivos pendentes) |
 | ADR-006 | Observabilidade: **OpenTelemetry + Grafana Cloud** | pendente (substitui a recomendacao de New Relic dos docs) |
 
 ## RFCs
@@ -38,13 +38,14 @@ Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 
 | Gate | Conteudo |
 |---|---|
-| [G1](evidence/g1/README.md) | Branch protection, Environments, secret scanning |
+| [G1](evidence/g1/README.md) | Snapshot de branch protection, Environments e secret scanning em 2026-09-08 |
+| [W0/W2](evidence/w0-w2/README.md) | Consolidacao dos PRs e validacao manual do EKS/Kustomize |
 
 ## Runbooks
 
 | Runbook | Conteudo |
 |---|---|
-| [secrets.md](runbooks/secrets.md) | Inventario dos 36 secrets, como preencher, rotacao |
+| [secrets.md](runbooks/secrets.md) | Inventario dos 18 secrets, como preencher e rotacionar |
 
 ## Ondas e gates
 
@@ -53,9 +54,9 @@ deste repo, junto aos documentos de planejamento. Resumo:
 
 | Onda | Entrega | Gate |
 |---|---|---|
-| W0 | Spikes de risco (LabRole, VPC Link, ingest Grafana, tempo de EKS) | G0: veredictos → ADR-001/002/006 |
-| W1 | 4 repos, protection, contrato de outputs, CI minima | G1: repos protegidos |
-| W2 | `apply` do EKS, k8s → Kustomize, logs JSON | G2: nodes Ready, `verify` verde |
+| W0 | Spikes de risco; medicao do EKS concluida, outros 3 pendentes | G0 parcial: veredictos → ADR-001/002/005/006 |
+| W1 | 4 repos, protection, contrato de outputs, CI minima | G1 parcial: secrets reais e ADRs pendentes |
+| W2 | EKS e Kustomize validados; logs/higiene pendentes | G2 parcial: nodes Ready ja demonstrados; `verify` ainda requerido |
 | W3 | RDS com `import`, FKs, uma OpenAPI | G3: pod conecta no RDS |
 | W4 | Lambda + API Gateway (A) · JWT + NLB interno (B) | G4: checkpoint E2E 200/401/403 |
 | W5 | Collector, 6 dashboards, alertas | G5: alerta disparado |
