@@ -57,7 +57,9 @@ gh variable get AWS_CREDENTIALS_READY --repo <org>/<repo>
 ```
 
 Ative `AWS_CREDENTIALS_READY=true` apenas no inicio da janela planejada e retorne a
-`false` ao final. A listagem do GitHub comprova nomes e datas, nunca o conteudo.
+`false` ao final. `gh secret list` comprova os nomes e as datas de atualizacao dos
+secrets, enquanto `gh variable get` comprova o valor atual da flag. Nenhum dos dois
+comandos revela o conteudo dos secrets.
 
 ## Credencial do Academy expira em ~4h
 
