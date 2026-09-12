@@ -29,6 +29,15 @@ nao e uma captura bruta: referencia commits, PRs e comandos observados pelo time
 | Ingestao OTLP | [Actions run 34426760765](https://github.com/postech-software-architecture/workshop-auth-serverless/actions/runs/34426760765): New Relic US respondeu HTTP 200 | **APROVADO** |
 | EKS + backend remoto | [Apply inicial 34546920538](https://github.com/postech-software-architecture/workshop-infra-kubernetes/actions/runs/34546920538) e [reaplicacao 34716391300](https://github.com/postech-software-architecture/workshop-infra-kubernetes/actions/runs/34716391300): state S3 e lock DynamoDB reutilizados; segundo plano teve `0 add, 1 change, 0 destroy` | **APROVADO** |
 | VPC Link + NLB interno | [Actions run 34716577120](https://github.com/postech-software-architecture/workshop-auth-serverless/actions/runs/34716577120): VPC Link `AVAILABLE`, NLB interno e proxy HTTP responderam 200 | **APROVADO** |
+| Logs JSON, OTLP e correlacao | [PR #65](https://github.com/postech-software-architecture/workshop-service-fase1/pull/65) e [CI 34718784454](https://github.com/postech-software-architecture/workshop-service-fase1/actions/runs/34718784454): testes e cobertura verdes | **APROVADO** |
+| Encerramento da janela | [Destroy 34716906674](https://github.com/postech-software-architecture/workshop-infra-kubernetes/actions/runs/34716906674): 24 recursos destruidos; state S3 e lock DynamoDB preservados | **APROVADO** |
+
+## Ajuste do cenario de dados
+
+A conta AWS Academy usada nas proximas ondas e diferente da conta presumida pelo plano e
+nao possui RDS legado. Portanto, auditoria de dados persistidos e `terraform import` ficam
+`N/A` enquanto o inventario estiver vazio. A W3 cria um RDS novo e valida migrations + seed
+em Testcontainers antes do primeiro apply.
 
 A verificacao funcional no New Relic encontrou um `Span` com:
 

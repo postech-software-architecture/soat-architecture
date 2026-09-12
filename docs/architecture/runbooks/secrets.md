@@ -1,6 +1,6 @@
 # Runbook — Secrets e credenciais
 
-**Estado documentado da configuracao:** o inventario alvo tem 16 secrets no Environment
+**Estado documentado da configuracao:** o inventario alvo tem 17 entradas de secrets no Environment
 `prod`. Credenciais AWS sao valores operacionais temporarios, renovados no inicio de
 cada janela; `AWS_CREDENTIALS_READY` continua sendo a trava do plan automatico.
 Execucoes anteriores nao provam que os valores ainda estejam validos nem que a
@@ -8,18 +8,19 @@ infraestrutura continue ativa.
 
 ## Inventario
 
-| Secret | kubernetes | database | serverless | Origem do valor |
-|---|:--:|:--:|:--:|---|
-| `AWS_ACCESS_KEY_ID` | sim | sim | sim | Academy → AWS Details |
-| `AWS_SECRET_ACCESS_KEY` | sim | sim | sim | Academy → AWS Details |
-| `AWS_SESSION_TOKEN` | sim | sim | sim | Academy → AWS Details (**temporario, ~4h**) |
-| `DB_PASSWORD` | — | sim | sim | escolhido pelo time; igual nos dois repos |
-| `JWT_SECRET` | — | — | sim | **identico** ao da aplicacao (32+ bytes) |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | sim | — | sim | New Relic US → `https://otlp.nr-data.net` |
-| `OTEL_EXPORTER_OTLP_HEADERS` | sim | — | sim | `api-key=<New Relic ingest license key>` |
+| Secret | aplicacao | kubernetes | database | serverless | Origem do valor |
+|---|:--:|:--:|:--:|:--:|---|
+| `AWS_ACCESS_KEY_ID` | — | sim | sim | sim | Academy → AWS Details |
+| `AWS_SECRET_ACCESS_KEY` | — | sim | sim | sim | Academy → AWS Details |
+| `AWS_SESSION_TOKEN` | — | sim | sim | sim | Academy → AWS Details (**temporario, ~4h**) |
+| `DB_PASSWORD` | — | — | sim | sim | escolhido pelo time; igual nos dois repos |
+| `JWT_SECRET` | sim | — | — | sim | **um unico valor**, novo e identico nos dois repos (32+ bytes) |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | — | sim | — | sim | New Relic US → `https://otlp.nr-data.net` |
+| `OTEL_EXPORTER_OTLP_HEADERS` | — | sim | — | sim | `api-key=<New Relic ingest license key>` |
 
 Todos em **Environment** (`prod`), nao em repo — assim herdam o gate
-de aprovacao. 16 secrets no total entre os 3 repos. Ambiente unico
+de aprovacao. Sao 17 entradas no total entre os 4 repos; `JWT_SECRET` conta duas vezes
+porque o mesmo valor deve existir nos Environments da aplicacao e do serverless. Ambiente unico
 `prod` nesta fase; `homolog` foi removido em 2026-09-08 (era espelho de `prod`).
 
 ## Duas travas contra apply acidental
@@ -79,13 +80,15 @@ Alem disso, o valor default commitado em `application.yml:31` do repo da aplicac
 esta no historico git de um repo **publico** (commit `118e4b3`). Trate-o como
 permanentemente comprometido: o `JWT_SECRET` real precisa ser **novo**, nunca aquele.
 
-Ver ADR-004 (contrato JWT) quando existir.
+Ver [ADR-004](../adr/ADR-004-jwt-contract.md). A rotacao e o provisionamento simultaneo nos
+dois repos fazem parte da janela da W4; ate la, o contrato esta fechado, mas o valor real nao
+e considerado provisionado.
 
 ## Rotacao
 
 | Secret | Quando |
 |---|---|
 | AWS (3) | a cada sessao do Academy (~4h) |
-| `JWT_SECRET` | uma vez, agora (o default esta exposto); depois se houver suspeita |
+| `JWT_SECRET` | na janela da W4, simultaneamente na aplicacao e no serverless; depois se houver suspeita |
 | `DB_PASSWORD` | ao trocar a senha do RDS; `lifecycle.ignore_changes` evita recriar a instancia |
 | New Relic ingest license key | se a chave vazar |

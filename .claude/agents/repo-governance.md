@@ -281,9 +281,12 @@ set_env_secret "$REPO" AWS_ACCESS_KEY_ID     prod "$AKID"
 set_env_secret "$REPO" AWS_SECRET_ACCESS_KEY prod "$SECRET"
 set_env_secret "$REPO" AWS_SESSION_TOKEN     prod "$TOKEN"
 
-# JWT: MESMO valor para app e Lambda no ambiente `prod` (doc 07).
+# JWT: gerar UMA vez na janela da W4 e gravar o MESMO valor na app e na Lambda.
 # Nunca o valor rotacionado-para-fora d3f8a1c2…f2a5.
-set_env_secret "$REPO" JWT_SECRET prod "$(openssl rand -hex 32)"
+JWT_VALUE="$(openssl rand -hex 32)"
+set_env_secret workshop-service-fase1 JWT_SECRET prod "$JWT_VALUE"
+set_env_secret workshop-auth-serverless JWT_SECRET prod "$JWT_VALUE"
+unset JWT_VALUE
 
 # Observabilidade no New Relic US (consumido pelo observability-platform)
 set_env_secret "$REPO" OTEL_EXPORTER_OTLP_ENDPOINT prod "https://otlp.nr-data.net"
@@ -334,9 +337,8 @@ chegar ao histórico público.
 - [ ] Branch protection capturada como evidência (`evidencias/g1-protection-*.json`)
 - [ ] Tag `phase3-baseline` criada **antes** da extração do terraform
 - [ ] Environment `prod` criado, com reviewer e `protected_branches` (ambiente unico)
-- [ ] `gh secret list --env prod` mostra `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
-      `AWS_SESSION_TOKEN`, `JWT_SECRET`, `OTEL_EXPORTER_OTLP_ENDPOINT` e
-      `OTEL_EXPORTER_OTLP_HEADERS` — só nomes
+- [ ] `gh secret list --env prod` mostra os nomes previstos para cada repositorio no
+      runbook; na W4, `JWT_SECRET` deve existir tanto na aplicacao quanto no serverless
 - [ ] Secret scanning + push protection habilitados, 0 alertas
 
 ```bash
