@@ -27,12 +27,16 @@ Coletadas em 2026-09-08 via `gh api`.
 
 ## Fechamento posterior do G1
 
-Os itens que estavam pendentes no snapshot foram concluidos: contrato com 12 outputs,
-CI minima verde, ADR-001/002/006 aceitos e tag `phase3-baseline` publicada. Credenciais do
-AWS Academy foram comprovadas nas execucoes da W0/W2, mas permanecem temporarias por
-natureza e sao renovadas conforme o runbook; nao sao uma pendencia permanente da fundacao.
-As RFCs e o contrato JWT foram formalizados antes da abertura da W3/W4. Assim, o G1 e
-considerado concluido em 2026-09-12.
+Os itens estruturais que estavam pendentes no snapshot foram concluidos: contrato com 12
+outputs, CI minima verde, ADR-001/002/006 aceitos e tag `phase3-baseline` publicada.
+Credenciais do AWS Academy foram comprovadas nas execucoes da W0/W2, mas permanecem
+temporarias por natureza e sao renovadas conforme o runbook. `GRAFANA_*` foi retirado do
+alvo quando a observabilidade migrou para `OTEL_EXPORTER_OTLP_*` com New Relic, tambem
+validado na W0. O contrato JWT foi formalizado, mas o `JWT_SECRET` novo sera gerado e
+instalado simultaneamente na aplicacao e no serverless somente na janela da W4.
+
+Portanto, o G1 estrutural e considerado concluido em 2026-09-12; este fechamento nao afirma
+que credenciais temporarias estejam permanentemente validas nem antecipa o secret da W4.
 
 ## Protecao aplicada
 

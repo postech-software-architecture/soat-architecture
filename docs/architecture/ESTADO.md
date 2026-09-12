@@ -81,14 +81,16 @@ O ambiente alvo atual usa **outra conta AWS Academy e comeca sem instancia RDS**
 
 Consequencias:
 
-- import de RDS, subnet group e security group: **nao aplicavel** enquanto o inventario da
-  conta estiver vazio;
+- import de RDS, subnet group e security group: **nao aplicavel** somente quando a consulta
+  individual confirmar a ausencia dos tres objetos gerenciados;
 - auditoria de dados persistidos: **nao aplicavel**, pois nao ha base legada nessa conta;
 - integridade do seed: continua obrigatoria e sera provada na W3 por Testcontainers,
   executando todas as migrations e as quatro FKs sobre uma base vazia;
-- antes do primeiro `apply`, uma consulta read-only ao inventario RDS deve confirmar que a
-  conta continua vazia. Se aparecer recurso preexistente, o fluxo muda para import e nenhum
-  apply e permitido antes disso.
+- antes do primeiro `apply`, consultas read-only devem confirmar separadamente que nao
+  existem a instancia `workshop-db`, o DB subnet group `workshop-db-subnets` e o security
+  group `workshop-db-sg` (por nome/tag e VPC). Uma lista vazia apenas de instancias RDS nao
+  libera o apply. Se qualquer um desses objetos existir, o fluxo muda para reconciliacao e
+  import do objeto correspondente; nenhum apply e permitido antes disso.
 
 ## Decisoes e riscos ainda abertos
 

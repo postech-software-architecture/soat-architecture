@@ -186,7 +186,7 @@ Conteúdo mínimo:
 - **claims atuais verificadas**: `sub`, `username`, `roles`, `iat`, `exp`
   (`JwtTokenService.java:45-52`);
 - **claims acrescentadas**: `iss`, `aud`, `jti`, com os **valores literais** decididos
-  (ex.: `iss=workshop-auth-serverless`, `aud=workshop-service`);
+  (`iss=workshop-auth`, `aud=workshop-service`);
 - **algoritmo**: HS256 **declarado explicitamente** nos dois emissores. Hoje é implícito
   (`signWith(secretKey)`, `JwtTokenService.java:51`, HS256 inferido via `Keys.hmacShaKeyFor`,
   `:126`). O ADR fecha isso;
