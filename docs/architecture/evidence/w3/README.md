@@ -12,13 +12,14 @@ implantado.
 
 | Entrega | Evidencia | Estado |
 |---|---|---|
-| Quatro FKs com `ON DELETE RESTRICT` e identidade tecnica `system.webhook` | commit final `56e56d2` de `workshop-service-fase1` | preparado; CI/merge pendentes |
+| Safety CD da aplicacao | commit `e9bb066` de `workshop-service-fase1`, exigindo deploy manual durante a W3 | preparado; CI/merge pendentes e pre-requisito dos merges de migration/OpenAPI |
+| Quatro FKs com `ON DELETE RESTRICT` e identidade tecnica `system.webhook` | commit final `f62898b`, precedido por `56e56d2`, de `workshop-service-fase1` | preparado; CI/merge pendentes |
 | Quatro indices das FKs novas (dois existentes + dois novos) e dois indices de FKs antigas | mesma migration; inventario em [relationships.md](../../database/relationships.md) | seis preparados para inspecao; CI pendente |
-| Teste de migrations, seed, FKs, orfaos, exclusao e indices | `DatabaseIntegrityMigrationIT`, commit final `56e56d2` | teste preparado para verificar; resultado de CI pendente |
+| Teste de migrations, seed, FKs, orfaos, exclusao e indices | `DatabaseIntegrityMigrationIT`, commit final `f62898b`, precedido por `56e56d2` | teste preparado para verificar; resultado de CI pendente |
 | OpenAPI 3.1 como unica fonte canônica de runtime na raiz | commit final `16cbb7a`, precedido por `1602856`; copia em `src/.../controllers/` removida | preparada; CI/merge pendentes |
 | Rota publica de status usa `{numero}` | `/api/v1/ordens-servico/{numero}/status` na OpenAPI raiz | conferido no artefato |
 | Terraform do RDS privado, state separado e workflows seguros | commit final `3d7afd9`, precedido por `1971b71`, `02a1a5c` e `efb60fd`, de `workshop-infra-database` | preparado; CI/merge/plan/apply pendentes |
-| `db_client_sg_id` associado aos nodes EKS e gates seguros | commit final `9e4cffd`, precedido por `2130563`, de `workshop-infra-kubernetes` | preparado; CI/merge/plan pendentes |
+| `db_client_sg_id` associado aos nodes EKS e gates seguros | commit final `97fd209`, precedido por `2130563` e `9e4cffd`, de `workshop-infra-kubernetes` | preparado; CI/merge/plan pendentes |
 | ER, escolha do banco, relacionamentos e plano de performance | documentos desta branch | preparados; render SVG/PNG pendente |
 
 Nao existe resultado verde registrado para `DatabaseIntegrityMigrationIT`. O teste esta
@@ -40,8 +41,10 @@ pendente.
 
 ## Pendente de CI e merge
 
-- executar e aprovar as pipelines dos trilhos de migration, OpenAPI, banco e acesso do
-  cluster (`56e56d2`, `16cbb7a`, `3d7afd9` e `9e4cffd`);
+- executar e aprovar a pipeline e o merge do safety CD `e9bb066` **antes** de integrar os
+  trilhos de migration e OpenAPI no mesmo repositorio;
+- depois desse pre-requisito, executar e aprovar as pipelines dos trilhos de migration,
+  OpenAPI, banco e acesso do cluster (`f62898b`, `16cbb7a`, `3d7afd9` e `97fd209`);
 - confirmar que a suite `DatabaseIntegrityMigrationIT` passa em PostgreSQL 15;
 - validar a OpenAPI raiz com parser 3.1, conferir que a copia de `src` esta ausente e que
   nenhuma spec historica e publicada como fonte de runtime;

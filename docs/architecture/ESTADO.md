@@ -97,9 +97,9 @@ Consequencias:
 | Item | Tratamento |
 |---|---|
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
-| Duas OpenAPI divergentes | trilho final `16cbb7a` (precedido por `1602856`): raiz 3.1 como unica fonte canônica de runtime, `{numero}` corrigido e copia de `src` removida; CI/merge pendentes |
-| Quatro FKs ausentes | trilho final `56e56d2`: migration com `ON DELETE RESTRICT`, dois indices existentes reutilizados, dois novos e teste preparado para verificar base vazia + seed; CI/merge pendentes |
-| Nodes sem identidade de cliente do banco | trilho final `9e4cffd` (precedido por `2130563`) associa `db_client_sg_id` ao node group e endurece os gates; CI, merge e `terraform plan` pendentes |
+| Duas OpenAPI divergentes | trilho final `16cbb7a` (precedido por `1602856`): raiz 3.1 como unica fonte canônica de runtime, `{numero}` corrigido e copia de `src` removida; CI/merge pendentes apos o safety CD `e9bb066` |
+| Quatro FKs ausentes | trilho final `f62898b` (precedido por `56e56d2`): migration com `ON DELETE RESTRICT`, dois indices existentes reutilizados, dois novos e teste preparado para verificar base vazia + seed; CI/merge pendentes apos o safety CD `e9bb066` |
+| Nodes sem identidade de cliente do banco | trilho final `97fd209` (precedido por `2130563` e `9e4cffd`) associa `db_client_sg_id` ao node group e protege o destroy; CI, merge e `terraform plan` pendentes |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
@@ -110,13 +110,16 @@ Os trilhos paralelos produziram artefatos locais ainda nao equivalentes a entreg
 1. Terraform de banco no commit final `3d7afd9` (precedido por `1971b71`, `02a1a5c` e
    `efb60fd`), preparado para criacao nova, inventario/import condicional e operacoes
    seguras;
-2. migration e teste no commit final `56e56d2`, preparados para verificar quatro FKs
-   `ON DELETE RESTRICT`, o seed e seis indices inspecionados;
-3. OpenAPI no commit final `16cbb7a` (precedido por `1602856`), com a raiz eleita como unica
+2. safety CD da aplicacao no commit `e9bb066`, que exige deploy manual durante a W3 e deve
+   ser mergeado antes dos trilhos de migration e OpenAPI;
+3. migration e teste no commit final `f62898b` (precedido por `56e56d2`), preparados para
+   verificar quatro FKs `ON DELETE RESTRICT`, o seed e seis indices inspecionados;
+4. OpenAPI no commit final `16cbb7a` (precedido por `1602856`), com a raiz eleita como unica
    fonte canônica de runtime e a copia de `src` removida;
-4. acesso do cluster no commit final `9e4cffd` (precedido por `2130563`), preparado para
-   associar `db_client_sg_id` aos nodes do EKS com gates de workflow endurecidos;
-5. ER pos-FK e documentacao de dados preparados em
+5. acesso do cluster no commit final `97fd209` (precedido por `2130563` e `9e4cffd`),
+   preparado para associar `db_client_sg_id` aos nodes do EKS e bloquear o destroy enquanto
+   o security group do banco existir;
+6. ER pos-FK e documentacao de dados preparados em
    [evidence/w3/README.md](evidence/w3/README.md).
 
 O proximo passo e levar os trilhos por CI/revisao/merge. Depois, abrir uma janela AWS para
