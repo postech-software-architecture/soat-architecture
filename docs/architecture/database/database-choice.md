@@ -56,11 +56,12 @@ metricas reais, e nao da configuracao academica.
 
 ## Evidencia e estado
 
-- infraestrutura e operacoes seguras preparadas no commit final `02a1a5c` de
-  `workshop-infra-database`, precedido por `1971b71`;
+- infraestrutura e operacoes seguras preparadas no commit final `3d7afd9` de
+  `workshop-infra-database`, precedido por `1971b71`, `02a1a5c` e `efb60fd`;
 - migration e teste de integridade preparados no commit final `56e56d2` da aplicacao;
-- associacao do `db_client_sg_id` aos nodes preparada no commit `2130563` de
-  `workshop-infra-kubernetes`; CI, merge e `terraform plan` continuam pendentes;
+- associacao do `db_client_sg_id` aos nodes e gates seguros preparados no commit final
+  `9e4cffd` de `workshop-infra-kubernetes`, precedido por `2130563`; CI, merge e
+  `terraform plan` continuam pendentes;
 - criacao do RDS, execucao real do Flyway e conectividade permanecem pendentes do checkpoint
   AWS da W3.
 

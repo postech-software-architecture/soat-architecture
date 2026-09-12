@@ -99,7 +99,7 @@ Consequencias:
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
 | Duas OpenAPI divergentes | trilho final `16cbb7a` (precedido por `1602856`): raiz 3.1 como unica fonte canônica de runtime, `{numero}` corrigido e copia de `src` removida; CI/merge pendentes |
 | Quatro FKs ausentes | trilho final `56e56d2`: migration com `ON DELETE RESTRICT`, dois indices existentes reutilizados, dois novos e teste preparado para verificar base vazia + seed; CI/merge pendentes |
-| Nodes sem identidade de cliente do banco | trilho `2130563` associa `db_client_sg_id` ao node group; CI, merge e `terraform plan` pendentes |
+| Nodes sem identidade de cliente do banco | trilho final `9e4cffd` (precedido por `2130563`) associa `db_client_sg_id` ao node group e endurece os gates; CI, merge e `terraform plan` pendentes |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
@@ -107,14 +107,15 @@ Consequencias:
 
 Os trilhos paralelos produziram artefatos locais ainda nao equivalentes a entrega implantada:
 
-1. Terraform de banco no commit final `02a1a5c` (precedido por `1971b71`), preparado para
-   criacao nova, inventario/import condicional e operacoes seguras;
+1. Terraform de banco no commit final `3d7afd9` (precedido por `1971b71`, `02a1a5c` e
+   `efb60fd`), preparado para criacao nova, inventario/import condicional e operacoes
+   seguras;
 2. migration e teste no commit final `56e56d2`, preparados para verificar quatro FKs
    `ON DELETE RESTRICT`, o seed e seis indices inspecionados;
 3. OpenAPI no commit final `16cbb7a` (precedido por `1602856`), com a raiz eleita como unica
    fonte canônica de runtime e a copia de `src` removida;
-4. acesso do cluster no commit `2130563`, preparado para associar `db_client_sg_id` aos
-   nodes do EKS;
+4. acesso do cluster no commit final `9e4cffd` (precedido por `2130563`), preparado para
+   associar `db_client_sg_id` aos nodes do EKS com gates de workflow endurecidos;
 5. ER pos-FK e documentacao de dados preparados em
    [evidence/w3/README.md](evidence/w3/README.md).
 

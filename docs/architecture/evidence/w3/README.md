@@ -17,8 +17,8 @@ implantado.
 | Teste de migrations, seed, FKs, orfaos, exclusao e indices | `DatabaseIntegrityMigrationIT`, commit final `56e56d2` | teste preparado para verificar; resultado de CI pendente |
 | OpenAPI 3.1 como unica fonte canônica de runtime na raiz | commit final `16cbb7a`, precedido por `1602856`; copia em `src/.../controllers/` removida | preparada; CI/merge pendentes |
 | Rota publica de status usa `{numero}` | `/api/v1/ordens-servico/{numero}/status` na OpenAPI raiz | conferido no artefato |
-| Terraform do RDS privado, state separado e workflows seguros | commit final `02a1a5c`, precedido por `1971b71`, de `workshop-infra-database` | preparado; CI/merge/plan/apply pendentes |
-| `db_client_sg_id` associado aos nodes EKS | commit `2130563` de `workshop-infra-kubernetes` | preparado; CI/merge/plan pendentes |
+| Terraform do RDS privado, state separado e workflows seguros | commit final `3d7afd9`, precedido por `1971b71`, `02a1a5c` e `efb60fd`, de `workshop-infra-database` | preparado; CI/merge/plan/apply pendentes |
+| `db_client_sg_id` associado aos nodes EKS e gates seguros | commit final `9e4cffd`, precedido por `2130563`, de `workshop-infra-kubernetes` | preparado; CI/merge/plan pendentes |
 | ER, escolha do banco, relacionamentos e plano de performance | documentos desta branch | preparados; render SVG/PNG pendente |
 
 Nao existe resultado verde registrado para `DatabaseIntegrityMigrationIT`. O teste esta
@@ -41,7 +41,7 @@ pendente.
 ## Pendente de CI e merge
 
 - executar e aprovar as pipelines dos trilhos de migration, OpenAPI, banco e acesso do
-  cluster (`56e56d2`, `16cbb7a`, `02a1a5c` e `2130563`);
+  cluster (`56e56d2`, `16cbb7a`, `3d7afd9` e `9e4cffd`);
 - confirmar que a suite `DatabaseIntegrityMigrationIT` passa em PostgreSQL 15;
 - validar a OpenAPI raiz com parser 3.1, conferir que a copia de `src` esta ausente e que
   nenhuma spec historica e publicada como fonte de runtime;
