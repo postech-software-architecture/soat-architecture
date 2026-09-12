@@ -19,11 +19,20 @@ Coletadas em 2026-09-08 via `gh api`.
 | Environments `homolog` / `prod` | OK (3 repos) | `environments-*.json` |
 | Secret scanning + push protection | OK | `security_and_analysis` nos 4 |
 | Sub-gate: `.gitignore` cobrindo `*.tfvars` | OK | `.gitignore` no 1o commit de cada repo |
-| Secrets `AWS_*` / `JWT_SECRET` / `GRAFANA_*` | **PENDENTE** | exige credencial real |
-| Contrato de outputs | **PENDENTE** | entrega do `terraform-cluster` |
-| CI minimo nos 3 repos novos | **PENDENTE** | entrega do `cicd-pipelines` |
-| ADR-001 / 002 / 006 | **PENDENTE** | dependem dos veredictos da W0 |
-| Tag `phase3-baseline` no repo da app | **PENDENTE** | antes da extracao do terraform |
+| Secrets `AWS_*` / `JWT_SECRET` / `GRAFANA_*` | pendente na coleta | exigia credencial real |
+| Contrato de outputs | pendente na coleta | entrega do `terraform-cluster` |
+| CI minimo nos 3 repos novos | pendente na coleta | entrega do `cicd-pipelines` |
+| ADR-001 / 002 / 006 | pendente na coleta | dependiam dos veredictos da W0 |
+| Tag `phase3-baseline` no repo da app | pendente na coleta | antes da extracao do terraform |
+
+## Fechamento posterior do G1
+
+Os itens que estavam pendentes no snapshot foram concluidos: contrato com 12 outputs,
+CI minima verde, ADR-001/002/006 aceitos e tag `phase3-baseline` publicada. Credenciais do
+AWS Academy foram comprovadas nas execucoes da W0/W2, mas permanecem temporarias por
+natureza e sao renovadas conforme o runbook; nao sao uma pendencia permanente da fundacao.
+As RFCs e o contrato JWT foram formalizados antes da abertura da W3/W4. Assim, o G1 e
+considerado concluido em 2026-09-12.
 
 ## Protecao aplicada
 
@@ -44,8 +53,8 @@ depois quebra a protecao da branch.
 
 ## Environments
 
-`homolog`: sem reviewer, deploy automatico a partir de `develop`.
-`prod`: exige aprovacao de `jeanrabello`. Este e o gate que o **G6** precisa
+No snapshot, `homolog` nao tinha reviewer e `prod` exigia aprovacao de `jeanrabello`.
+Depois da coleta, `homolog` foi removido e `prod` permaneceu como ambiente unico. Este e o gate que o **G6** precisa
 demonstrar **bloqueando** um apply de producao.
 
 O repo `soat-architecture` nao tem Environments: nao faz deploy.
