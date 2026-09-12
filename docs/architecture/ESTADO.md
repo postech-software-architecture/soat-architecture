@@ -21,7 +21,7 @@ estado real registrado aqui prevalece.
 | **W0 — spikes de risco** | **concluida** | LabRole, VPC Link/NLB, OTLP/New Relic e backend remoto aprovados |
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
-| **W3 — dados + contrato** | **em preparacao** | criar RDS novo, FKs/indices, uma OpenAPI e documentacao de dados |
+| **W3 — dados + contrato** | **em execucao** | quatro trilhos preparados; CI, merge, plans, RDS, Flyway e `EXPLAIN` real pendentes |
 | W4-A / W4-B | nao iniciada | depende do G3; contrato JWT ja congelado no ADR-004 |
 | W5 — observabilidade | nao iniciada | depende do G4 |
 | W6 — governanca | nao iniciada | depende do G5 |
@@ -97,21 +97,33 @@ Consequencias:
 | Item | Tratamento |
 |---|---|
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
-| Duas OpenAPI divergentes | W3 elegera uma canonica, alinhada ao controller que usa `{numero}` |
-| Quatro FKs ausentes | W3 cria migrations, indices e politicas `ON DELETE`, validadas sobre banco vazio + seed |
+| Duas OpenAPI divergentes | trilho final `16cbb7a` (precedido por `1602856`): raiz 3.1 como unica fonte canônica de runtime, `{numero}` corrigido e copia de `src` removida; CI/merge pendentes apos o safety CD `e9bb066` |
+| Quatro FKs ausentes | trilho final `f62898b` (precedido por `56e56d2`): migration com `ON DELETE RESTRICT`, dois indices existentes reutilizados, dois novos e teste preparado para verificar base vazia + seed; CI/merge pendentes apos o safety CD `e9bb066` |
+| Nodes sem identidade de cliente do banco | trilho final `97fd209` (precedido por `2130563` e `9e4cffd`) associa `db_client_sg_id` ao node group e protege o destroy; CI, merge e `terraform plan` pendentes |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
-## Proximo passo recomendado
+## W3 em execucao
 
-Iniciar a W3 localmente, em paralelo conceitual:
+Os trilhos paralelos produziram artefatos locais ainda nao equivalentes a entrega implantada:
 
-1. ajustar o Terraform de banco para **criacao nova**, com import apenas como salvaguarda
-   condicional;
-2. criar as quatro FKs e respectivos indices com testes de migration;
-3. eleger e reconciliar a unica `openapi.yaml` canonica;
-4. produzir ER, justificativa do PostgreSQL, relacionamentos e revisao de performance.
+1. Terraform de banco no commit final `3d7afd9` (precedido por `1971b71`, `02a1a5c` e
+   `efb60fd`), preparado para criacao nova, inventario/import condicional e operacoes
+   seguras;
+2. safety CD da aplicacao no commit `e9bb066`, que exige deploy manual durante a W3 e deve
+   ser mergeado antes dos trilhos de migration e OpenAPI;
+3. migration e teste no commit final `f62898b` (precedido por `56e56d2`), preparados para
+   verificar quatro FKs `ON DELETE RESTRICT`, o seed e seis indices inspecionados;
+4. OpenAPI no commit final `16cbb7a` (precedido por `1602856`), com a raiz eleita como unica
+   fonte canônica de runtime e a copia de `src` removida;
+5. acesso do cluster no commit final `97fd209` (precedido por `2130563` e `9e4cffd`),
+   preparado para associar `db_client_sg_id` aos nodes do EKS e bloquear o destroy enquanto
+   o security group do banco existir;
+6. ER pos-FK e documentacao de dados preparados em
+   [evidence/w3/README.md](evidence/w3/README.md).
 
-Somente depois dessas mudancas passarem em CI deve ser aberta uma janela AWS para subir a
-VPC/EKS, criar o RDS, executar Flyway, validar a conexao da aplicacao e destruir os recursos
-ao final.
+O proximo passo e levar os trilhos por CI/revisao/merge. Depois, abrir uma janela AWS para
+subir VPC/EKS, criar o RDS, executar Flyway, validar a conexao, coletar `EXPLAIN` real e
+preservar evidencias antes do destroy. O encerramento da janela deve destruir **primeiro o
+RDS pelo repositorio de banco e somente depois o cluster/VPC**. Ate la, o Gate G3 permanece
+aberto.

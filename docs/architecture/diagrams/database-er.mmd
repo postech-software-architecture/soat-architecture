@@ -1,0 +1,126 @@
+%% Representa 16 das 17 tabelas relacionais. webhook_eventos_processados nao aparece porque
+%% nao possui FK/relacionamento; a renderizacao SVG/PNG permanece pendente durante a W3.
+erDiagram
+    CLIENTES {
+        UUID id PK
+        VARCHAR documento UK
+        VARCHAR nome
+        BOOLEAN ativo
+        TIMESTAMP data_remocao
+    }
+    ENDERECOS {
+        UUID id PK
+        UUID cliente_id FK,UK
+        VARCHAR cidade
+        VARCHAR estado
+    }
+    VEICULOS {
+        UUID id PK
+        VARCHAR placa
+        BOOLEAN ativo
+    }
+    VEICULOS_CLIENTES {
+        UUID veiculo_id PK,FK
+        UUID cliente_id PK,FK
+    }
+    USUARIOS {
+        UUID id PK
+        VARCHAR username UK
+        UUID cliente_id FK
+        BOOLEAN ativo
+        BOOLEAN bloqueado
+    }
+    USUARIOS_ROLES {
+        UUID usuario_id PK,FK
+        VARCHAR role PK
+    }
+    REFRESH_TOKENS {
+        UUID id PK
+        UUID usuario_id FK
+        VARCHAR token UK
+        BOOLEAN revogado
+    }
+    ORDENS_SERVICO {
+        UUID id PK
+        UUID id_cliente FK
+        UUID id_veiculo FK
+        VARCHAR numero UK
+        VARCHAR status
+        TIMESTAMP data_criacao
+        TIMESTAMP data_remocao
+    }
+    HISTORICO_STATUS_OS {
+        UUID id PK
+        UUID ordem_servico_id FK
+        UUID usuario_id FK
+        VARCHAR status_anterior
+        VARCHAR status_novo
+        TIMESTAMP data_transicao
+    }
+    SERVICOS {
+        UUID id PK
+        VARCHAR nome
+        NUMERIC valor
+        BOOLEAN ativo
+    }
+    PECAS_INSUMOS {
+        UUID id PK
+        VARCHAR sku
+        NUMERIC valor_unitario
+        BOOLEAN ativo
+    }
+    ORDENS_SERVICO_ITENS {
+        UUID id PK
+        UUID ordem_servico_id FK
+        UUID servico_id FK
+        UUID peca_insumo_id FK
+        INTEGER ordem_item
+        VARCHAR tipo
+        VARCHAR status_execucao
+    }
+    ORCAMENTOS {
+        UUID id PK
+        UUID id_ordem_servico FK
+        VARCHAR status
+        NUMERIC valor
+    }
+    ORCAMENTOS_ITENS {
+        UUID orcamento_id PK,FK
+        INTEGER ordem_item PK
+        NUMERIC valor
+    }
+    ESTOQUES {
+        UUID id PK
+        UUID peca_insumo_id FK
+        VARCHAR localizacao
+        NUMERIC quantidade
+    }
+    MOVIMENTACOES_ESTOQUE {
+        UUID id PK
+        UUID estoque_id FK
+        UUID ordem_servico_id FK
+        UUID orcamento_id FK
+        VARCHAR tipo
+        NUMERIC quantidade
+        TIMESTAMP data_movimentacao
+    }
+
+    CLIENTES ||--o| ENDERECOS : possui
+    CLIENTES ||--o{ VEICULOS_CLIENTES : vincula
+    VEICULOS ||--o{ VEICULOS_CLIENTES : vincula
+    CLIENTES o|--o| USUARIOS : autentica
+    USUARIOS ||--o{ USUARIOS_ROLES : recebe
+    USUARIOS ||--o{ REFRESH_TOKENS : possui
+    CLIENTES ||--o{ ORDENS_SERVICO : solicita
+    VEICULOS ||--o{ ORDENS_SERVICO : recebe
+    ORDENS_SERVICO ||--o{ HISTORICO_STATUS_OS : registra
+    USUARIOS ||--o{ HISTORICO_STATUS_OS : executa
+    ORDENS_SERVICO ||--o{ ORDENS_SERVICO_ITENS : compoe
+    SERVICOS o|--o{ ORDENS_SERVICO_ITENS : referencia
+    PECAS_INSUMOS o|--o{ ORDENS_SERVICO_ITENS : referencia
+    ORDENS_SERVICO ||--o{ ORCAMENTOS : recebe
+    ORCAMENTOS ||--o{ ORCAMENTOS_ITENS : fotografa
+    PECAS_INSUMOS ||--o{ ESTOQUES : distribui
+    ESTOQUES ||--o{ MOVIMENTACOES_ESTOQUE : movimenta
+    ORDENS_SERVICO o|--o{ MOVIMENTACOES_ESTOQUE : rastreia
+    ORCAMENTOS o|--o{ MOVIMENTACOES_ESTOQUE : origina
