@@ -11,8 +11,9 @@ execution role das funcoes Lambda. Nao criar roles IAM adicionais.
 
 O [workflow 34425749565](https://github.com/postech-software-architecture/workshop-auth-serverless/actions/runs/34425749565)
 criou uma Lambda Python temporaria com a `LabRole`, aguardou o estado ativo,
-invocou a funcao e recebeu HTTP 200. Ao final, nenhuma funcao com prefixo
-`w0-labrole-spike-` permaneceu listada no console.
+invocou a funcao e recebeu HTTP 200. O workflow solicitou a remocao no cleanup;
+em seguida, o operador confirmou manualmente no console que nenhuma funcao com
+prefixo `w0-labrole-spike-` permanecia listada.
 
 ## Consequencias
 

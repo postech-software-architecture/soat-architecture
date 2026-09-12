@@ -285,17 +285,17 @@ set_env_secret "$REPO" AWS_SESSION_TOKEN     prod "$TOKEN"
 # Nunca o valor rotacionado-para-fora d3f8a1c2…f2a5.
 set_env_secret "$REPO" JWT_SECRET prod "$(openssl rand -hex 32)"
 
-# Observabilidade (consumido pelo observability-platform)
-set_env_secret "$REPO" GRAFANA_CLOUD_OTLP_ENDPOINT prod "$GRAFANA_ENDPOINT"
-set_env_secret "$REPO" GRAFANA_CLOUD_INSTANCE_ID   prod "$GRAFANA_INSTANCE"
-set_env_secret "$REPO" GRAFANA_CLOUD_API_TOKEN     prod "$GRAFANA_TOKEN"
+# Observabilidade no New Relic US (consumido pelo observability-platform)
+set_env_secret "$REPO" OTEL_EXPORTER_OTLP_ENDPOINT prod "https://otlp.nr-data.net"
+set_env_secret "$REPO" OTEL_EXPORTER_OTLP_HEADERS  prod "api-key=$NEW_RELIC_LICENSE_KEY"
 ```
 
 Regras não negociáveis (doc 07):
 - **Renovar `AWS_*` imediatamente antes da janela de deploy.** A credencial do Academy expira em
   ~4h; um apply de EKS leva ~15–20 min. Credencial velha = apply pela metade.
 - `db_password` **não** trafega por `terraform_remote_state`. Vive como Environment secret,
-  consumido igualmente pelo k8s Secret e pela Lambda.
+  consumido igualmente pelo k8s Secret e pela Lambda. O provider ainda pode persisti-lo
+  no state do recurso; `sensitive` mascara a CLI, nao criptografa o state.
 - Nunca `echo`/`grep` de valor de secret em step de workflow. Listar secrets é sempre **por nome**:
 
 ```bash
@@ -335,7 +335,8 @@ chegar ao histórico público.
 - [ ] Tag `phase3-baseline` criada **antes** da extração do terraform
 - [ ] Environment `prod` criado, com reviewer e `protected_branches` (ambiente unico)
 - [ ] `gh secret list --env prod` mostra `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
-      `AWS_SESSION_TOKEN`, `JWT_SECRET`, `GRAFANA_*` — só nomes
+      `AWS_SESSION_TOKEN`, `JWT_SECRET`, `OTEL_EXPORTER_OTLP_ENDPOINT` e
+      `OTEL_EXPORTER_OTLP_HEADERS` — só nomes
 - [ ] Secret scanning + push protection habilitados, 0 alertas
 
 ```bash

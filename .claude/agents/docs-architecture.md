@@ -152,7 +152,7 @@ gerados **a partir dos veredictos**, não de intenção. Sem veredicto registrad
 |---|---|
 | `LabRole` assumível por Lambda | ADR-001 (cloud) e o desenho todo da autenticação |
 | VPC Link + NLB interno | ADR-002 (topologia do Gateway) |
-| Ingest Grafana Cloud (1 métrica + 1 log + 1 trace via OTLP) | ADR-006 (observabilidade) |
+| Ingest New Relic US (1 trace via OTLP, expandido para métricas/logs na W5) | ADR-006 (observabilidade) |
 | Tempo de EKS + viabilidade de backend S3/DynamoDB | ADR-005 (state), política de cluster longevo |
 
 Entregas da W1:
@@ -164,10 +164,10 @@ Entregas da W1:
 4. **ADR-002 — topologia do API Gateway.** Gateway como única borda; `POST /api/auth/cpf` →
    Lambda; `/api/v1/**` → VPC Link → NLB **interno**. A alternativa rejeitada (LB público) é
    registrada com o motivo: sem NLB interno o Gateway não é borda de fato, e existe bypass.
-5. **ADR-006 — observabilidade: OpenTelemetry + Grafana Cloud.** Este ADR **substitui
-   explicitamente a recomendação de New Relic** do doc
+5. **ADR-006 — observabilidade: OpenTelemetry + New Relic US.** A decisão mantém
+   OpenTelemetry como protocolo vendor-neutral e confirma o New Relic recomendado no doc
    `06-observabilidade-metricas-logs-traces-e-alertas.md`. Diga isso no ADR, com o motivo
-   (padrão vendor-neutral, exports versionáveis em JSON, ingest validado no spike da W0) —
+   (instrumentação portável e ingest validado no spike da W0) —
    documento que contradiz a implementação é o risco #10, e a forma de matá-lo é o ADR
    nomear a divergência em vez de deixá-la implícita.
 

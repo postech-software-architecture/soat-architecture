@@ -113,7 +113,7 @@ separados de format e coverage.
   `fmt/validate/plan/apply`; não edita HCL
 - `k8s/**` — é do `k8s-workloads`. Você aplica overlays; não escreve manifesto
 - `src/**`, `pom.xml` — é do `otel-app` / `tests`
-- Dashboards e alertas do Grafana — é do `observability-platform`
+- Dashboards e alertas do New Relic — é do `observability-platform`
 
 Coordenação: os **nomes** dos jobs que você escreve viram required checks configurados pelo
 `repo-governance`. Combine os nomes antes; renomear um job depois quebra a proteção da branch.

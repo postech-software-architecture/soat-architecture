@@ -150,4 +150,5 @@ perto do fim falha no meio e deixa **state parcial**.
    `terraform plan` real de forma controlada.
 
 > O EKS nao precisa ser recriado para iniciar trabalho documental ou local. A proxima
-> janela AWS deve priorizar os spikes que ainda podem mudar a arquitetura.
+> janela AWS deve ser curta e dedicada aos ensaios do RDS/import que exigem recursos
+> ativos; logs, testes e auditorias locais devem avancar sem manter o cluster ligado.

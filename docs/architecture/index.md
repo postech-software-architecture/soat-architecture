@@ -23,7 +23,7 @@ Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 | [ADR-002](adr/ADR-002-api-gateway-vpc-link-nlb.md) | Topologia do API Gateway com VPC Link + NLB interno | aceito: caminho privado respondeu HTTP 200 |
 | ADR-003 | Segregacao em 4 repositorios | pendente |
 | ADR-004 | **Contrato JWT** — claims, algoritmo, dois emissores | pendente (pre-condicao da W4) |
-| [ADR-005](adr/ADR-005-backend-terraform-remoto.md) | Coordenacao de state entre repos com S3 + DynamoDB | aceito: backend reutilizado por applies reais |
+| [ADR-005](adr/ADR-005-backend-terraform-remoto.md) | Coordenacao de state entre repos com S3 + DynamoDB | aceito para o cluster; rollout dos consumidores na W3/W4 |
 | [ADR-006](adr/ADR-006-opentelemetry-new-relic.md) | Observabilidade: **OpenTelemetry + New Relic US** | aceito: ingestao OTLP comprovada |
 
 ## RFCs
@@ -45,7 +45,7 @@ Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 
 | Runbook | Conteudo |
 |---|---|
-| [secrets.md](runbooks/secrets.md) | Inventario dos 18 secrets, como preencher e rotacionar |
+| [secrets.md](runbooks/secrets.md) | Inventario dos 16 secrets, como preencher e rotacionar |
 
 ## Ondas e gates
 
