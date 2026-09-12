@@ -59,4 +59,7 @@ condicional: antes do primeiro apply, o inventario consulta separadamente a inst
 
 ## Questoes em aberto
 
-Definir na W3 as politicas `ON DELETE`, os indices de apoio e os `EXPLAIN` documentados.
+As quatro novas FKs adotam `ON DELETE RESTRICT`; quatro indices existentes foram reutilizados
+e dois foram acrescentados. A coleta numerica de `EXPLAIN (ANALYZE, BUFFERS)` permanece
+pendente do checkpoint da W3 com PostgreSQL e massa representativa, conforme
+[performance-review.md](../database/performance-review.md).

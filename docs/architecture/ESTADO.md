@@ -21,7 +21,7 @@ estado real registrado aqui prevalece.
 | **W0 — spikes de risco** | **concluida** | LabRole, VPC Link/NLB, OTLP/New Relic e backend remoto aprovados |
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
-| **W3 — dados + contrato** | **em preparacao** | criar RDS novo, FKs/indices, uma OpenAPI e documentacao de dados |
+| **W3 — dados + contrato** | **em execucao** | artefatos locais preparados; CI, merge, RDS, Flyway e `EXPLAIN` real pendentes |
 | W4-A / W4-B | nao iniciada | depende do G3; contrato JWT ja congelado no ADR-004 |
 | W5 — observabilidade | nao iniciada | depende do G4 |
 | W6 — governanca | nao iniciada | depende do G5 |
@@ -97,21 +97,21 @@ Consequencias:
 | Item | Tratamento |
 |---|---|
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
-| Duas OpenAPI divergentes | W3 elegera uma canonica, alinhada ao controller que usa `{numero}` |
-| Quatro FKs ausentes | W3 cria migrations, indices e politicas `ON DELETE`, validadas sobre banco vazio + seed |
+| Duas OpenAPI divergentes | consolidacao preparada: raiz 3.1 canônica, `{numero}` corrigido e duplicata removida; merge pendente |
+| Quatro FKs ausentes | migration preparada com `ON DELETE RESTRICT`, dois indices novos e teste sobre base vazia + seed; CI/merge pendentes |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
-## Proximo passo recomendado
+## W3 em execucao
 
-Iniciar a W3 localmente, em paralelo conceitual:
+Os trilhos paralelos produziram artefatos locais ainda nao equivalentes a entrega implantada:
 
-1. ajustar o Terraform de banco para **criacao nova**, com import apenas como salvaguarda
-   condicional;
-2. criar as quatro FKs e respectivos indices com testes de migration;
-3. eleger e reconciliar a unica `openapi.yaml` canonica;
-4. produzir ER, justificativa do PostgreSQL, relacionamentos e revisao de performance.
+1. Terraform de banco preparado para criacao nova, com inventario/import condicional;
+2. quatro FKs `ON DELETE RESTRICT`, indices e teste de migration preparados;
+3. OpenAPI 3.1 da raiz eleita como canônica e duplicata removida;
+4. ER pos-FK e documentacao de dados preparados em
+   [evidence/w3/README.md](evidence/w3/README.md).
 
-Somente depois dessas mudancas passarem em CI deve ser aberta uma janela AWS para subir a
-VPC/EKS, criar o RDS, executar Flyway, validar a conexao da aplicacao e destruir os recursos
-ao final.
+O proximo passo e levar os trilhos por CI/revisao/merge. Depois, abrir uma janela AWS para
+subir VPC/EKS, criar o RDS, executar Flyway, validar a conexao, coletar `EXPLAIN` real e
+preservar evidencias antes do destroy. Ate la, o Gate G3 permanece aberto.

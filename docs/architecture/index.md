@@ -39,7 +39,18 @@ Indice central da documentacao arquitetural dos quatro repositorios da entrega.
 |---|---|
 | [G1](evidence/g1/README.md) | Branch protection, Environments e secret scanning |
 | [W0/W2](evidence/w0-w2/README.md) | Spikes, EKS, aplicacao instrumentada e destroy |
+| [W3](evidence/w3/README.md) | Integridade, OpenAPI, RDS e pendencias do Gate G3 |
 | [Secrets](runbooks/secrets.md) | Inventario, renovacao e rotacao |
+
+## Dados — W3
+
+| Item | Conteudo |
+|---|---|
+| [Diagrama ER](diagrams/database-er.mmd) | Schema pos-FK, cardinalidades e tabelas associativas |
+| [Escolha do banco](database/database-choice.md) | PostgreSQL no RDS, alternativas e concessoes do Academy |
+| [Relacionamentos](database/relationships.md) | Ownership, obrigatoriedade, `ON DELETE` e indices |
+| [Revisao de performance](database/performance-review.md) | Consultas, indices e checkpoint reprodutivel de `EXPLAIN` |
+| [OpenAPI canônica](https://github.com/postech-software-architecture/workshop-service-fase1/blob/main/openapi.yaml) | Contrato OpenAPI 3.1 unico na raiz apos o merge da W3 |
 
 ## Ondas e gates
 
@@ -51,7 +62,7 @@ documentos de planejamento. Este resumo registra o estado executado:
 | W0 | quatro spikes de risco | **concluida** |
 | W1 | repositorios, protecoes, outputs, CI, RFCs e ADRs | **concluida** |
 | W2 | EKS/Kustomize, LB Controller, logs JSON/OTLP, correlacao e destroy | **concluida** |
-| W3 | RDS novo, FKs, uma OpenAPI e documentacao de dados | atual |
+| W3 | RDS novo, FKs, uma OpenAPI e documentacao de dados | **em execucao; G3 aberto** |
 | W4 | Lambda + API Gateway; JWT + NLB interno | G4: 200/401/403 e sem bypass |
 | W5 | Collector, seis dashboards e alertas | G5: alerta disparado |
 | W6 | pipelines de deploy e governanca finais | G6: quatro pipelines verdes |
