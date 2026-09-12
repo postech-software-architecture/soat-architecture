@@ -54,12 +54,15 @@ condicional: antes do primeiro apply, o inventario consulta separadamente a inst
 - o plan da W3 deve provar `publicly_accessible = false` e a origem exclusiva
   `db_client_sg_id` na porta 5432;
 - Flyway cria e semeia o schema novo;
-- as quatro FKs sao validadas em Testcontainers sobre base vazia + seed;
-- o banco deve ser destruido antes da VPC ao fim da janela.
+- ha teste Testcontainers preparado para verificar as quatro FKs sobre base vazia + seed;
+  seu resultado permanece pendente da CI;
+- ao fim da janela, executar e confirmar primeiro o destroy do RDS pelo repositorio de
+  banco; somente depois executar o destroy do cluster/VPC.
 
 ## Questoes em aberto
 
-As quatro novas FKs adotam `ON DELETE RESTRICT`; quatro indices existentes foram reutilizados
-e dois foram acrescentados. A coleta numerica de `EXPLAIN (ANALYZE, BUFFERS)` permanece
+As quatro novas FKs adotam `ON DELETE RESTRICT`; dois indices existentes foram reutilizados
+e dois foram acrescentados. O teste preparado ainda inspeciona dois indices de FKs antigas,
+totalizando seis. A coleta numerica de `EXPLAIN (ANALYZE, BUFFERS)` permanece
 pendente do checkpoint da W3 com PostgreSQL e massa representativa, conforme
 [performance-review.md](../database/performance-review.md).

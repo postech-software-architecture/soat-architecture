@@ -56,8 +56,13 @@ metricas reais, e nao da configuracao academica.
 
 ## Evidencia e estado
 
-- infraestrutura preparada no commit `1971b71` de `workshop-infra-database`;
-- migration de integridade preparada no commit `915d7bf` da aplicacao;
-- teste de migration preparado no commit `d02b1c2` da aplicacao;
+- infraestrutura e operacoes seguras preparadas no commit final `02a1a5c` de
+  `workshop-infra-database`, precedido por `1971b71`;
+- migration e teste de integridade preparados no commit final `56e56d2` da aplicacao;
+- associacao do `db_client_sg_id` aos nodes preparada no commit `2130563` de
+  `workshop-infra-kubernetes`; CI, merge e `terraform plan` continuam pendentes;
 - criacao do RDS, execucao real do Flyway e conectividade permanecem pendentes do checkpoint
   AWS da W3.
+
+No encerramento desse checkpoint, o workflow do banco deve destruir e confirmar a remocao
+do RDS antes que o workflow do cluster remova EKS e VPC.

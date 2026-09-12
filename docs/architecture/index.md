@@ -46,11 +46,11 @@ Indice central da documentacao arquitetural dos quatro repositorios da entrega.
 
 | Item | Conteudo |
 |---|---|
-| [Diagrama ER](diagrams/database-er.mmd) | Schema pos-FK, cardinalidades e tabelas associativas |
+| [Diagrama ER](diagrams/database-er.mmd) | Fonte Mermaid de 16/17 tabelas; `webhook_eventos_processados` nao participa de relacoes; SVG/PNG pendentes |
 | [Escolha do banco](database/database-choice.md) | PostgreSQL no RDS, alternativas e concessoes do Academy |
 | [Relacionamentos](database/relationships.md) | Ownership, obrigatoriedade, `ON DELETE` e indices |
 | [Revisao de performance](database/performance-review.md) | Consultas, indices e checkpoint reprodutivel de `EXPLAIN` |
-| [OpenAPI canônica](https://github.com/postech-software-architecture/workshop-service-fase1/blob/main/openapi.yaml) | Contrato OpenAPI 3.1 unico na raiz apos o merge da W3 |
+| [OpenAPI canônica](https://github.com/postech-software-architecture/workshop-service-fase1/blob/main/openapi.yaml) | Unica fonte de runtime: OpenAPI 3.1 na raiz; copia de `src` ausente e specs historicas nao publicadas |
 
 ## Ondas e gates
 

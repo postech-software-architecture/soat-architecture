@@ -12,29 +12,42 @@ implantado.
 
 | Entrega | Evidencia | Estado |
 |---|---|---|
-| Quatro FKs com `ON DELETE RESTRICT` | migration no commit `915d7bf` de `workshop-service-fase1` | preparada |
-| Dois indices novos e quatro reutilizados | mesma migration; inventario em [relationships.md](../../database/relationships.md) | preparado |
-| Teste de migrations, seed, FKs, orfaos, exclusao e indices | `DatabaseIntegrityMigrationIT`, commit `d02b1c2` | preparado; resultado de CI pendente |
-| OpenAPI 3.1 unica e canônica na raiz | commit `1602856`; duplicata em `src/.../controllers/` removida | preparada |
+| Quatro FKs com `ON DELETE RESTRICT` e identidade tecnica `system.webhook` | commit final `56e56d2` de `workshop-service-fase1` | preparado; CI/merge pendentes |
+| Quatro indices das FKs novas (dois existentes + dois novos) e dois indices de FKs antigas | mesma migration; inventario em [relationships.md](../../database/relationships.md) | seis preparados para inspecao; CI pendente |
+| Teste de migrations, seed, FKs, orfaos, exclusao e indices | `DatabaseIntegrityMigrationIT`, commit final `56e56d2` | teste preparado para verificar; resultado de CI pendente |
+| OpenAPI 3.1 como unica fonte canônica de runtime na raiz | commit final `16cbb7a`, precedido por `1602856`; copia em `src/.../controllers/` removida | preparada; CI/merge pendentes |
 | Rota publica de status usa `{numero}` | `/api/v1/ordens-servico/{numero}/status` na OpenAPI raiz | conferido no artefato |
-| Terraform do RDS privado e state separado | commit `1971b71` de `workshop-infra-database` | preparado; apply pendente |
-| ER, escolha do banco, relacionamentos e plano de performance | documentos desta branch | preparados |
+| Terraform do RDS privado, state separado e workflows seguros | commit final `02a1a5c`, precedido por `1971b71`, de `workshop-infra-database` | preparado; CI/merge/plan/apply pendentes |
+| `db_client_sg_id` associado aos nodes EKS | commit `2130563` de `workshop-infra-kubernetes` | preparado; CI/merge/plan pendentes |
+| ER, escolha do banco, relacionamentos e plano de performance | documentos desta branch | preparados; render SVG/PNG pendente |
 
-Uma execucao local de `mvn -Dtest=DatabaseIntegrityMigrationIT test` em 2026-09-12 chegou a
-compilar e iniciar o teste, mas foi interrompida antes das assercoes porque nao havia um
-daemon Docker acessivel ao Testcontainers. Portanto, esta tentativa **nao** e registrada
-como teste verde; a execucao em CI ou em uma maquina com Docker continua obrigatoria.
+Nao existe resultado verde registrado para `DatabaseIntegrityMigrationIT`. O teste esta
+preparado para verificar PostgreSQL 15, todas as migrations, seed, identidade tecnica,
+quatro FKs novas, orfaos, `ON DELETE RESTRICT` e os seis indices inspecionados; somente a CI
+futura pode promover esse item a evidencia.
 
-A especificacao canônica sera
+A unica fonte canônica de runtime sera
 [`/openapi.yaml`](https://github.com/postech-software-architecture/workshop-service-fase1/blob/main/openapi.yaml)
-depois do merge do trilho OpenAPI. Nao deve restar outra `openapi.yaml` na aplicacao.
+depois do merge do trilho OpenAPI. O gate exige que a copia
+`src/main/java/com/postech/workshop_service/api/controllers/openapi.yaml` esteja ausente e
+que build, publicacao e consumidores usem somente o arquivo da raiz. Versoes encontradas
+apenas no historico Git ou em registros historicos de documentacao nao sao especificacoes
+publicadas e nao contam como uma segunda fonte de runtime.
+
+O ER em Mermaid representa 16 das 17 tabelas. `webhook_eventos_processados` foi excluida do
+diagrama por nao possuir relacionamentos; gerar e revisar as renderizacoes SVG/PNG continua
+pendente.
 
 ## Pendente de CI e merge
 
-- executar e aprovar as pipelines dos repositorios de aplicacao e banco;
+- executar e aprovar as pipelines dos trilhos de migration, OpenAPI, banco e acesso do
+  cluster (`56e56d2`, `16cbb7a`, `02a1a5c` e `2130563`);
 - confirmar que a suite `DatabaseIntegrityMigrationIT` passa em PostgreSQL 15;
-- validar a OpenAPI com parser 3.1 e conferir que existe exatamente um arquivo;
-- revisar `terraform plan` e provar que o state do banco nao contem VPC, EKS ou node group.
+- validar a OpenAPI raiz com parser 3.1, conferir que a copia de `src` esta ausente e que
+  nenhuma spec historica e publicada como fonte de runtime;
+- revisar o `terraform plan` do banco e provar que seu state nao contem VPC, EKS ou node
+  group;
+- revisar o `terraform plan` do cluster para a associacao de `db_client_sg_id` aos nodes.
 
 ## Pendente do checkpoint AWS
 
@@ -46,17 +59,20 @@ depois do merge do trilho OpenAPI. Nao deve restar outra `openapi.yaml` na aplic
 5. iniciar a aplicacao, aplicar Flyway e comprovar conectividade a partir do EKS;
 6. coletar `EXPLAIN (ANALYZE, BUFFERS)` com massa representativa conforme
    [performance-review.md](../../database/performance-review.md);
-7. preservar logs, planos e identificadores de runs antes de destruir banco e cluster.
+7. preservar logs, planos e identificadores de runs;
+8. destruir **primeiro o RDS**, pelo workflow de `workshop-infra-database`, e confirmar sua
+   remocao; somente depois destruir cluster/VPC por `workshop-infra-kubernetes`.
 
 ## Checklist do Gate G3
 
 | Criterio | Estado |
 |---|---|
-| ER corresponde ao schema pos-FK | preparado, sujeito ao merge/teste |
-| Quatro FKs restritivas e indices validados | teste preparado; CI pendente |
+| ER corresponde ao schema pos-FK | fonte 16/17 preparada; SVG/PNG e validacao pendentes |
+| Quatro FKs restritivas e indices validados | teste preparado para verificar; CI pendente |
 | PostgreSQL/RDS justificado e privado | documentado; apply pendente |
 | State do banco respeita fronteira | validacao local/plan pendentes |
-| Exatamente uma OpenAPI canônica | artefato preparado; merge pendente |
+| Uma fonte OpenAPI canônica de runtime na raiz | artefato preparado; CI/merge e gate de publicacao pendentes |
+| Nodes possuem `db_client_sg_id` | mudanca preparada; CI/merge/plan pendentes |
 | `EXPLAIN` real antes/depois | **pendente do checkpoint** |
 | Aplicacao conecta ao RDS e Flyway conclui | **pendente do checkpoint** |
 

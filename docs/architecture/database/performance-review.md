@@ -10,7 +10,8 @@ real nesta versao.
 
 ## Indices da W3
 
-A migration de integridade reutiliza quatro indices ja existentes e acrescenta dois:
+A migration de integridade fecha quatro FKs: reutiliza dois indices ja existentes e
+acrescenta dois:
 
 | FK | Indice | Estado |
 |---|---|---|
@@ -18,6 +19,11 @@ A migration de integridade reutiliza quatro indices ja existentes e acrescenta d
 | `ordens_servico.id_veiculo` | `ix_ordens_servico_veiculo` | existente |
 | `ordens_servico_itens.peca_insumo_id` | `ix_ordens_servico_itens_peca_insumo` | novo na W3 |
 | `historico_status_os.usuario_id` | `ix_historico_status_os_usuario` | novo na W3 |
+
+O teste preparado tambem inspeciona dois indices de FKs antigas,
+`ix_ordens_servico_itens_servico` e `ix_historico_status_os_ordem_data`. Portanto, sao seis
+indices inspecionados no total: quatro atendem as FKs novas (dois existentes + dois novos) e
+dois protegem relacionamentos preexistentes.
 
 As FKs nao criam automaticamente indices no lado filho no PostgreSQL. Os dois indices novos
 reduzem o custo esperado de joins, consultas por pai e verificacoes ao excluir/alterar uma
@@ -93,8 +99,9 @@ apresentados como duracao de cada status. O indice existente
 
 ## Checkpoint reproduzivel
 
-Executar em uma base descartavel ou no RDS de demonstracao, depois de aplicar todas as
-migrations e carregar uma massa representativa. Substituir os parametros por IDs presentes.
+Executar as consultas com indices em uma base descartavel ou no RDS de demonstracao, depois
+de aplicar todas as migrations e carregar uma massa representativa. Substituir os parametros
+por IDs presentes.
 
 ```sql
 ANALYZE ordens_servico_itens;
@@ -113,7 +120,9 @@ WHERE usuario_id = :'usuario_id'
 ORDER BY data_transicao DESC;
 ```
 
-Para comparar os dois indices novos sem alterar persistentemente o ambiente:
+O experimento **sem indice** abaixo usa `DROP INDEX` e so pode ser executado em uma base
+descartavel, isolada e sem trafego. Ele nunca deve ser executado no RDS ativo, mesmo dentro de
+transacao, pois o `DROP INDEX` adquire locks e pode afetar requisicoes concorrentes.
 
 ```sql
 BEGIN;

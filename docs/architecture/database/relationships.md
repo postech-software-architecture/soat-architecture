@@ -17,9 +17,26 @@ As quatro constraints novas sao validadas imediatamente, e nao criadas como `NOT
 | `ordens_servico_itens.peca_insumo_id` | `pecas_insumos.id` | muitos itens para uma peca; opcional, conforme `tipo` | Item dos tipos peca/insumo referencia o catalogo e permite rastrear reserva. | `RESTRICT` | `ix_ordens_servico_itens_peca_insumo` (**novo**) |
 | `historico_status_os.usuario_id` | `usuarios.id` | muitas transicoes para um usuario; obrigatoria | O historico preserva o autor da transicao para auditoria. | `RESTRICT` | `ix_historico_status_os_usuario` (**novo**) |
 
-O teste `DatabaseIntegrityMigrationIT` prova que as quatro constraints existem e estao
-validadas, rejeitam registros orfaos com SQLSTATE `23503`, impedem a exclusao dos quatro pais
-referenciados e que os seis indices de apoio esperados existem.
+O teste `DatabaseIntegrityMigrationIT` esta preparado para verificar que as quatro
+constraints existem e estao validadas, rejeitam registros orfaos com SQLSTATE `23503` e
+impedem a exclusao dos quatro pais referenciados. Para as quatro FKs novas, ele inspeciona
+dois indices existentes (`ix_ordens_servico_cliente` e `ix_ordens_servico_veiculo`) e dois
+novos. Tambem preserva a verificacao de dois indices associados a FKs antigas
+(`ix_ordens_servico_itens_servico` e `ix_historico_status_os_ordem_data`), totalizando seis
+indices inspecionados. O resultado continua pendente da CI.
+
+## Identidade tecnica do webhook
+
+A FK obrigatoria de `historico_status_os.usuario_id` exige uma identidade persistida para
+transicoes disparadas pelo webhook. A migration cria a conta tecnica com UUID fixo
+`70000000-0000-0000-0000-000000000001`, `username = system.webhook`, `ativo = false`,
+`bloqueado = true` e papel `SISTEMA`. Nao existe credencial provisionada para essa conta e o
+papel tecnico nao concede acesso aos endpoints destinados a papeis humanos.
+
+A origem externa continua auditavel no campo `historico_status_os.usuario_username`, no
+formato historico `webhook:<origem>`. O remapeamento para o UUID tecnico alcanca somente
+linhas desse formato cujo `usuario_id` ainda e orfao; historicos ligados a um usuario
+existente nao sao alterados.
 
 ## Demais relacionamentos importantes
 
@@ -43,6 +60,10 @@ referenciados e que os seis indices de apoio esperados existem.
 `webhook_eventos_processados` nao possui FK por decisao de fronteira: ele guarda o
 identificador opaco emitido por um sistema externo para idempotencia. Nao existe entidade
 pai local que possa ser referenciada com integridade relacional.
+
+O diagrama ER textual cobre 16 das 17 tabelas. `webhook_eventos_processados` e a unica
+excluida por nao participar de relacionamentos; a renderizacao do diagrama em SVG/PNG ainda
+esta pendente e nao constitui evidencia do G3 nesta branch.
 
 ## Regras que permanecem na aplicacao
 
