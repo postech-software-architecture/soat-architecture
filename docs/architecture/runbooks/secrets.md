@@ -1,9 +1,10 @@
 # Runbook — Secrets e credenciais
 
-**Estado documentado da configuracao:** os 18 secrets dos Environments foram criados
-com placeholder e as CIs permanecem travadas por `AWS_CREDENTIALS_READY=false`.
-O EKS ja foi aplicado e validado manualmente com credenciais temporarias; isso nao
-significa que o cluster continue ativo nem que os secrets da CI estejam preenchidos.
+**Estado documentado da configuracao:** o inventario alvo tem 16 secrets no Environment
+`prod`. Credenciais AWS sao valores operacionais temporarios, renovados no inicio de
+cada janela; `AWS_CREDENTIALS_READY` continua sendo a trava do plan automatico.
+Execucoes anteriores nao provam que os valores ainda estejam validos nem que a
+infraestrutura continue ativa.
 
 ## Inventario
 
@@ -14,12 +15,11 @@ significa que o cluster continue ativo nem que os secrets da CI estejam preenchi
 | `AWS_SESSION_TOKEN` | sim | sim | sim | Academy → AWS Details (**temporario, ~4h**) |
 | `DB_PASSWORD` | — | sim | sim | escolhido pelo time; igual nos dois repos |
 | `JWT_SECRET` | — | — | sim | **identico** ao da aplicacao (32+ bytes) |
-| `GRAFANA_OTLP_ENDPOINT` | sim | — | sim | Grafana Cloud → OTLP |
-| `GRAFANA_INSTANCE_ID` | sim | — | sim | Grafana Cloud → OTLP |
-| `GRAFANA_API_TOKEN` | sim | — | sim | Grafana Cloud → token de ingest |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | sim | — | sim | New Relic US → `https://otlp.nr-data.net` |
+| `OTEL_EXPORTER_OTLP_HEADERS` | sim | — | sim | `api-key=<New Relic ingest license key>` |
 
 Todos em **Environment** (`prod`), nao em repo — assim herdam o gate
-de aprovacao. 18 secrets no total (3 repos × 4–8 secrets). Ambiente unico
+de aprovacao. 16 secrets no total entre os 3 repos. Ambiente unico
 `prod` nesta fase; `homolog` foi removido em 2026-09-08 (era espelho de `prod`).
 
 ## Duas travas contra apply acidental
@@ -88,4 +88,4 @@ Ver ADR-004 (contrato JWT) quando existir.
 | AWS (3) | a cada sessao do Academy (~4h) |
 | `JWT_SECRET` | uma vez, agora (o default esta exposto); depois se houver suspeita |
 | `DB_PASSWORD` | ao trocar a senha do RDS; `lifecycle.ignore_changes` evita recriar a instancia |
-| Grafana | se o token vazar |
+| New Relic ingest license key | se a chave vazar |

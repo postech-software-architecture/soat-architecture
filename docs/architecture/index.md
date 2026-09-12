@@ -19,12 +19,12 @@ Indice central da documentacao arquitetural. Este repositorio agrega a visao dos
 
 | # | Decisao | Estado |
 |---|---|---|
-| ADR-001 | Provedor de nuvem e restricoes do AWS Academy | pendente (depende dos spikes da W0) |
-| ADR-002 | Topologia do API Gateway (VPC Link + NLB interno vs. fallback) | pendente (spike da W0) |
+| [ADR-001](adr/ADR-001-aws-academy-labrole.md) | Provedor de nuvem e restricoes do AWS Academy | aceito: LabRole aprovada para Lambda |
+| [ADR-002](adr/ADR-002-api-gateway-vpc-link-nlb.md) | Topologia do API Gateway com VPC Link + NLB interno | aceito: caminho privado respondeu HTTP 200 |
 | ADR-003 | Segregacao em 4 repositorios | pendente |
 | ADR-004 | **Contrato JWT** — claims, algoritmo, dois emissores | pendente (pre-condicao da W4) |
-| ADR-005 | Coordenacao de state entre repos (S3 remoto vs. artifact) | parcial (S3 permitido; recursos definitivos pendentes) |
-| ADR-006 | Observabilidade: **OpenTelemetry + Grafana Cloud** | pendente (substitui a recomendacao de New Relic dos docs) |
+| [ADR-005](adr/ADR-005-backend-terraform-remoto.md) | Coordenacao de state entre repos com S3 + DynamoDB | aceito: backend reutilizado por applies reais |
+| [ADR-006](adr/ADR-006-opentelemetry-new-relic.md) | Observabilidade: **OpenTelemetry + New Relic US** | aceito: ingestao OTLP comprovada |
 
 ## RFCs
 
@@ -54,7 +54,7 @@ deste repo, junto aos documentos de planejamento. Resumo:
 
 | Onda | Entrega | Gate |
 |---|---|---|
-| W0 | Spikes de risco; medicao do EKS concluida, outros 3 pendentes | G0 parcial: veredictos → ADR-001/002/005/006 |
+| W0 | EKS/backend, LabRole, OTLP/New Relic e VPC Link aprovados | G0 concluido: ADR-001/002/005/006 |
 | W1 | 4 repos, protection, contrato de outputs, CI minima | G1 parcial: secrets reais e ADRs pendentes |
 | W2 | EKS e Kustomize validados; logs/higiene pendentes | G2 parcial: nodes Ready ja demonstrados; `verify` ainda requerido |
 | W3 | RDS com `import`, FKs, uma OpenAPI | G3: pod conecta no RDS |

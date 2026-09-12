@@ -1,6 +1,6 @@
 # Evidencias W0/W2 — validacao de cloud e workloads
 
-Registro consolidado em 2026-09-09. Diferentemente dos JSONs de G1, este documento
+Registro consolidado em 2026-09-12. Diferentemente dos JSONs de G1, este documento
 nao e uma captura bruta: referencia commits, PRs e comandos observados pelo time.
 
 ## Mudancas integradas
@@ -20,6 +20,33 @@ nao e uma captura bruta: referencia commits, PRs e comandos observados pelo time
 - AWS Load Balancer Controller observado disponivel.
 - Kustomize confirmado em `main` da aplicacao: `k8s/base`, `k8s/overlays/dev` e
   `k8s/overlays/aws`.
+
+## Spikes W0 executados entre 2026-09-09 e 2026-09-12
+
+| Spike | Evidencia | Veredicto |
+|---|---|---|
+| LabRole + Lambda | [Actions run 34425749565](https://github.com/postech-software-architecture/workshop-auth-serverless/actions/runs/34425749565): funcao temporaria criada, invocada com HTTP 200 e ausente da listagem ao final | **APROVADO** |
+| Ingestao OTLP | [Actions run 34426760765](https://github.com/postech-software-architecture/workshop-auth-serverless/actions/runs/34426760765): New Relic US respondeu HTTP 200 | **APROVADO** |
+| EKS + backend remoto | [Apply inicial 34546920538](https://github.com/postech-software-architecture/workshop-infra-kubernetes/actions/runs/34546920538) e [reaplicacao 34716391300](https://github.com/postech-software-architecture/workshop-infra-kubernetes/actions/runs/34716391300): state S3 e lock DynamoDB reutilizados; segundo plano teve `0 add, 1 change, 0 destroy` | **APROVADO** |
+| VPC Link + NLB interno | [Actions run 34716577120](https://github.com/postech-software-architecture/workshop-auth-serverless/actions/runs/34716577120): VPC Link `AVAILABLE`, NLB interno e proxy HTTP responderam 200 | **APROVADO** |
+
+A verificacao funcional no New Relic encontrou um `Span` com:
+
+- `service.name = workshop-w0-otlp-spike`;
+- `deployment.environment = prod`;
+- `newrelic.source = api.traces.otlp`;
+- `otel.statusCode = OK`;
+- `trace.id = 4dc385e84004ef41d95a3f3e8917b336`.
+
+O primeiro ensaio de VPC Link revelou `NoCredentialProviders` no AWS Load Balancer
+Controller. O [PR #5 do repo Kubernetes](https://github.com/postech-software-architecture/workshop-infra-kubernetes/pull/5)
+adotou, somente para o Academy, `hostNetwork`, `ClusterFirstWithHostNet`, uma replica
+e rollout `Recreate`. A nova execucao concluiu todo o caminho e limpou os recursos
+temporarios sem avisos. Fora do Academy, a decisao continua sendo IRSA ou EKS Pod Identity.
+
+O backend definitivo usa o bucket versionado `soat-tc3-tfstate-mateus-paz`, chave
+`cluster/terraform.tfstate`, e a tabela DynamoDB `soat-tc3-tflock`, todos em
+`us-east-1`. Bucket e tabela foram criados fora do state para sobreviver ao destroy.
 
 Comandos de reproducao para uma nova sessao:
 
