@@ -3,9 +3,9 @@
 Levantamento verificado no codigo e na API do GitHub, nao nos documentos de
 planejamento (que superestimam a base em vários pontos).
 
-**Atualizado em:** 2026-09-09
+**Atualizado em:** 2026-09-12
 **Onda atual:** W2 (cloud + higiene) — parcialmente concluida
-**Bloqueio principal:** validar `LabRole` como execution role de Lambda antes da W4-A
+**Bloqueio principal:** concluir logs JSON/OTel e auditar orfaos antes da W3
 **Ambientes:** `prod` unico. `homolog` removido dos 3 repos em 2026-09-08 (era espelho de `prod`).
 
 ---
@@ -14,7 +14,7 @@ planejamento (que superestimam a base em vários pontos).
 
 | Onda | Estado | Bloqueio |
 |---|---|---|
-| **W0** — spikes de risco | **parcial** | medicao do EKS feita; Lambda, VPC Link e Grafana pendentes |
+| **W0** — spikes de risco | **concluida** | 4 veredictos aprovados; ADR-001/002/005/006 registrados |
 | **W1** — fundacao | **parcial** | repos/CI prontos; secrets reais e ADRs pendentes |
 | **W2** — cloud + higiene | **parcial** | EKS e Kustomize validados; higiene da app e logs pendentes |
 | W3 — dados + contrato | nao iniciada | depende da W2 |
@@ -48,36 +48,33 @@ planejamento (que superestimam a base em vários pontos).
 
 | # | Pendencia | De quem depende |
 |---|---|---|
-| 1 | Remover `infra/eks/**` duplicado do repo da app | em PR coordenado; baseline ja publicada |
-| 2 | Logs JSON + OpenTelemetry na app, com testes | W2/W5 |
-| 3 | **Spike `LabRole` + Lambda** | credencial AWS Academy; bloqueia W4-A |
-| 4 | Spike VPC Link + NLB interno | credencial AWS Academy; define ADR-002 |
-| 5 | Spike de ingestao OTLP no Grafana Cloud | endpoint, instance ID e token |
-| 6 | Backend S3 + lock definitivos | recursos ainda nao criados |
-| 7 | `terraform plan` real nas CIs | secrets de `prod` e `AWS_CREDENTIALS_READY=true` |
-| 8 | ADR-001 / 002 / 005 / 006 | registrar os veredictos dos spikes |
-| 9 | Required status checks na branch protection | W6, depois de estabilizar nomes dos jobs |
+| 1 | Logs JSON + OpenTelemetry na app, com testes | W2/W5 |
+| 2 | Auditoria read-only de orfaos e ensaio do import do RDS | W2; pre-condicao da W3 |
+| 3 | `terraform plan` real nas CIs | secrets temporarios de `prod` e `AWS_CREDENTIALS_READY=true` |
+| 4 | ADR-003 e ADR-004 | segregacao dos repos e contrato JWT antes da W4 |
+| 5 | Required status checks na branch protection | W6, depois de estabilizar nomes dos jobs |
 
 ---
 
-## W0 — execucao parcial
+## W0 — execucao concluida
 
 O `apply` do EKS comprovou a compatibilidade da infraestrutura com o AWS Academy e
 mediu cerca de 16 minutos. Nodes, `metrics-server` e AWS Load Balancer Controller
 foram validados nessa sessao. Isso e uma evidencia de execucao, nao uma afirmacao de
 que o cluster permanece ativo: o procedimento do Academy exige `destroy` ao final.
 
-O desenho da F4 (autenticacao serverless) ainda nao esta validado.
+O uso da `LabRole` pela Lambda e a ingestao OTLP no New Relic US foram aprovados.
+O spike final comprovou API Gateway -> VPC Link -> NLB interno -> EKS com HTTP 200.
 
 | Spike | Precisa de | Mata qual risco |
 |---|---|---|
-| **LabRole assumivel por Lambda** | AWS | Se o trust policy nao inclui `lambda.amazonaws.com`, **todo o desenho da F4 cai** e vira o fallback "Lambda chama endpoint da app". **Maior incognita do projeto** |
-| **VPC Link + NLB interno** | AWS | Define topologia privada final vs. fallback documentado |
-| **Ingest Grafana Cloud** | **so token** | Destrava a W5. Nao precisa de AWS |
-| **Tempo de EKS + backend S3** | **parcialmente concluido** | `apply` ~16 min; uso de S3 permitido, recursos definitivos ainda pendentes |
+| **LabRole assumivel por Lambda** | **APROVADO** | Lambda temporaria assumiu a role, respondeu 200 e nao permaneceu listada |
+| **VPC Link + NLB interno** | **APROVADO** | VPC Link `AVAILABLE`, NLB interno e proxy HTTP 200 |
+| **Ingestao OTLP / New Relic US** | **APROVADO** | HTTP 200 e span localizado pelo `trace.id` no New Relic |
+| **Tempo de EKS + backend S3** | **APROVADO** | backend S3 + lock DynamoDB reutilizados por dois applies; workflows protegidos |
 
-O spike do **Grafana e o unico que nao toca a AWS** — precisa apenas do token e um
-`curl` OTLP. Pode ser feito a qualquer momento.
+O backend escolhido para observabilidade e **New Relic US**, mantendo OpenTelemetry
+como protocolo vendor-neutral.
 
 > A validacao foi executada manualmente em uma sessao temporaria do Academy. As CIs
 > continuam protegidas por `AWS_CREDENTIALS_READY=false` enquanto os secrets de
@@ -94,7 +91,7 @@ O spike do **Grafana e o unico que nao toca a AWS** — precisa apenas do token 
 | 3 | Duas `openapi.yaml` | Sao **6** arquivos, mas 4 sao contratos de spec em `specs/`. O conflito real e raiz (2015 linhas) vs. `src/.../controllers/` (3186) |
 | 4 | `runAsUser: 100` | Depende da branch: `main`/`dev4` **nao fixam UID**; `dev3` usa `-u 1000`. Deve ser **derivado da imagem** |
 | 5 | `/actuator/health` precisa ser liberado | **Ja esta** `permitAll()` (`SecurityConfig.java:63-64`). A obrigacao e nao estreitar |
-| 6 | Recomenda New Relic | Substituido por **OTel + Grafana Cloud** (ADR-006) |
+| 6 | Recomenda New Relic | Confirmado como **OpenTelemetry + New Relic US** (ADR-006) |
 | 7 | — | `/api/v1/ordens-servico/*/status` esta **publico** sem autenticacao (`SecurityConfig.java:62`) |
 | 8 | — | `db_password` era **output** do terraform (state!) e `var.db_password` tinha default `"workshop"`. Corrigido na extracao |
 
@@ -113,11 +110,10 @@ permanentemente queimado. O `JWT_SECRET` real precisa ser **novo**.
 
 Pendente: rotacao + remocao do default com fail-fast (entrega da W4-B).
 
-### 2. Desenho da F4 nao validado (ALTO — bloqueia W4-A)
+### 2. Desenho da F4 validado (risco encerrado na W0)
 
-Sem o spike da LabRole, nao se sabe se a Lambda consegue assumir a role. O repo
-`workshop-auth-serverless` existe e esta esperando essa resposta. A W4-A e o
-**caminho critico** do projeto (3 dependencias externas contra 1 da trilha da app).
+Os spikes comprovaram que a Lambda consegue assumir a `LabRole` e que a topologia
+privada responde via VPC Link e NLB interno. A W4 pode seguir conforme ADR-002.
 
 ### 3. FK sobre seed com orfaos (MEDIO — bloqueia W3)
 
@@ -147,11 +143,12 @@ perto do fim falha no meio e deixa **state parcial**.
 
 ## Proximo passo recomendado
 
-1. **Spike da LabRole com uma Lambda minima**; registrar o veredicto no ADR-001.
-2. Em paralelo, executar os spikes de **VPC Link + NLB** e **ingestao OTLP**.
-3. Remover `infra/eks/**` duplicado da app e concluir logs JSON/OTel com testes.
+1. Concluir logs JSON/OTel com testes na aplicacao.
+2. Auditar orfaos das quatro FKs e ensaiar o `terraform import` do RDS.
+3. Fechar o G2 com `mvn verify` e Kustomize validos.
 4. Preencher secrets somente no inicio de uma janela de execucao e habilitar o
    `terraform plan` real de forma controlada.
 
 > O EKS nao precisa ser recriado para iniciar trabalho documental ou local. A proxima
-> janela AWS deve priorizar os spikes que ainda podem mudar a arquitetura.
+> janela AWS deve ser curta e dedicada aos ensaios do RDS/import que exigem recursos
+> ativos; logs, testes e auditorias locais devem avancar sem manter o cluster ligado.

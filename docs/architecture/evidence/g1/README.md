@@ -7,6 +7,8 @@ Coletadas em 2026-09-08 via `gh api`.
 > unico; o Environment `homolog` foi removido dos 3 repos (era espelho de `prod`).
 > Esta evidencia reflete o estado **no momento da coleta do G1** e e mantida como
 > snapshot — nao foi reescrita. Estado corrente em [ESTADO.md](../../ESTADO.md).
+> A referencia a `GRAFANA_*` abaixo tambem e historica; a decisao vigente usa
+> `OTEL_EXPORTER_OTLP_*` com New Relic US, conforme [ADR-006](../../adr/ADR-006-opentelemetry-new-relic.md).
 
 ## Criterios do G1
 
