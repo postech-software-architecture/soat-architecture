@@ -8,7 +8,7 @@ estado real registrado aqui prevalece.
 
 **Onda atual:** W3 — dados + contrato
 
-**Situacao:** W0, W1 e W2 concluidas
+**Situacao:** W0, W1 e W2 concluidas; W3 implementada e verde em CI, aguardando janela AWS
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -21,7 +21,7 @@ estado real registrado aqui prevalece.
 | **W0 — spikes de risco** | **concluida** | LabRole, VPC Link/NLB, OTLP/New Relic e backend remoto aprovados |
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
-| **W3 — dados + contrato** | **em preparacao** | criar RDS novo, FKs/indices, uma OpenAPI e documentacao de dados |
+| **W3 — dados + contrato** | **pronta para a janela AWS** | quatro frentes implementadas e com CI verde; ver [evidence/w3/README.md](evidence/w3/README.md) |
 | W4-A / W4-B | nao iniciada | depende do G3; contrato JWT ja congelado no ADR-004 |
 | W5 — observabilidade | nao iniciada | depende do G4 |
 | W6 — governanca | nao iniciada | depende do G5 |
@@ -97,21 +97,20 @@ Consequencias:
 | Item | Tratamento |
 |---|---|
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
-| Duas OpenAPI divergentes | W3 elegera uma canonica, alinhada ao controller que usa `{numero}` |
-| Quatro FKs ausentes | W3 cria migrations, indices e politicas `ON DELETE`, validadas sobre banco vazio + seed |
+| Duas OpenAPI divergentes | resolvido na W3: uma unica `openapi.yaml` na raiz, 63 operacoes conferidas contra os controllers |
+| Quatro FKs ausentes | resolvido na W3: migration com as quatro FKs `RESTRICT` e dois indices, validada por Testcontainers sobre base vazia |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
 ## Proximo passo recomendado
 
-Iniciar a W3 localmente, em paralelo conceitual:
+As quatro frentes locais da W3 estao concluidas e com CI verde; o detalhamento e as
+provas executadas estao em [evidence/w3/README.md](evidence/w3/README.md).
 
-1. ajustar o Terraform de banco para **criacao nova**, com import apenas como salvaguarda
-   condicional;
-2. criar as quatro FKs e respectivos indices com testes de migration;
-3. eleger e reconciliar a unica `openapi.yaml` canonica;
-4. produzir ER, justificativa do PostgreSQL, relacionamentos e revisao de performance.
+O que resta exige credenciais do Academy:
 
-Somente depois dessas mudancas passarem em CI deve ser aberta uma janela AWS para subir a
-VPC/EKS, criar o RDS, executar Flyway, validar a conexao da aplicacao e destruir os recursos
-ao final.
+1. revisar e mergear as cinco PRs da onda (as duas de infraestrutura pedem aprovacao);
+2. abrir a janela, subir VPC/EKS e confirmar `CREATE` no inventario read-only antes do
+   primeiro apply do banco;
+3. aplicar o RDS, rodar Flyway na instancia real e validar a conexao da aplicacao;
+4. destruir na ordem: banco antes do cluster.
