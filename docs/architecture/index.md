@@ -43,6 +43,16 @@ Indice central da documentacao arquitetural dos quatro repositorios da entrega.
 | [Secrets](runbooks/secrets.md) | Inventario, renovacao e rotacao |
 | [Modelo de dados](data/modelo-de-dados.md) | ER, relacionamentos, politica de remocao e revisao de indices (W3) |
 
+## Dados — W3
+
+| Item | Conteudo |
+|---|---|
+| [Diagrama ER](diagrams/database-er.mmd) | Fonte Mermaid de 16/17 tabelas; `webhook_eventos_processados` nao participa de relacoes |
+| [Escolha do banco](database/database-choice.md) | PostgreSQL no RDS, alternativas e concessoes do Academy |
+| [Relacionamentos](database/relationships.md) | Ownership, obrigatoriedade, `ON DELETE` e indices |
+| [Revisao de performance](database/performance-review.md) | Consultas, indices e checkpoint reprodutivel de `EXPLAIN` |
+| [OpenAPI canonica](https://github.com/postech-software-architecture/workshop-service-fase1/blob/main/openapi.yaml) | Unica fonte de runtime: OpenAPI 3.1 na raiz |
+
 ## Ondas e gates
 
 O plano completo de orquestracao (W0–W7, G0–G6 e caminho critico) permanece junto aos
@@ -53,7 +63,7 @@ documentos de planejamento. Este resumo registra o estado executado:
 | W0 | quatro spikes de risco | **concluida** |
 | W1 | repositorios, protecoes, outputs, CI, RFCs e ADRs | **concluida** |
 | W2 | EKS/Kustomize, LB Controller, logs JSON/OTLP, correlacao e destroy | **concluida** |
-| W3 | RDS novo, FKs, uma OpenAPI e documentacao de dados | atual |
+| W3 | RDS novo, FKs, uma OpenAPI e documentacao de dados | **pronta para a janela AWS; G3 aberto** |
 | W4 | Lambda + API Gateway; JWT + NLB interno | G4: 200/401/403 e sem bypass |
 | W5 | Collector, seis dashboards e alertas | G5: alerta disparado |
 | W6 | pipelines de deploy e governanca finais | G6: quatro pipelines verdes |

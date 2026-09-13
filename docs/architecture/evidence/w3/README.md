@@ -16,7 +16,7 @@ credenciais do Academy e esta isolado na secao final.
 | 1 | 4 FKs + indices, validadas em base vazia | **pronta** | `DatabaseIntegrityMigrationIT` (5 testes) + suite completa verde |
 | 2 | OpenAPI canonica unica | **pronta** | duplicata removida; 63 operacoes conferidas contra os controllers |
 | 3 | Terraform do RDS por criacao nova | **pronta** | `validate` OK; gates de inventario e plan exercitados |
-| 4 | Documentacao de dados (ER, PostgreSQL, relacionamentos, performance) | **pronta** | [modelo-de-dados.md](../../data/modelo-de-dados.md), extraido do schema real |
+| 4 | Documentacao de dados (ER, PostgreSQL, relacionamentos, performance) | **pronta** | [modelo consolidado](../../data/modelo-de-dados.md), [diagrama ER](../../diagrams/database-er.mmd), [relacionamentos](../../database/relationships.md) e [performance](../../database/performance-review.md) |
 
 ### Pull requests
 
@@ -129,14 +129,13 @@ automatico entre as rotas do spec e as declaradas nos controllers nao encontrou
 Nada abaixo pode avancar sem credenciais do Academy. Esta e a fronteira onde esta
 sessao para.
 
-1. Concluir a consolidacao dos PRs de documentacao [#9](https://github.com/postech-software-architecture/soat-architecture/pull/9)
-   e [#10](https://github.com/postech-software-architecture/soat-architecture/pull/10), preservando os artefatos complementares.
-2. Abrir a janela AWS e subir VPC/EKS pelo `workshop-infra-kubernetes`.
-3. Rodar o inventario read-only e confirmar `CREATE` antes do primeiro apply do banco.
-4. Aplicar o RDS, executar Flyway contra a instancia real e validar a conexao da
+1. Abrir a janela AWS e subir VPC/EKS pelo `workshop-infra-kubernetes`.
+2. Rodar o inventario read-only e confirmar `CREATE` antes do primeiro apply do banco.
+3. Aplicar o RDS, executar Flyway contra a instancia real e validar a conexao da
    aplicacao pelo `db_client_sg`.
-5. Coletar evidencias da janela (plan, apply, saida do Flyway, teste de conectividade).
-6. Destruir na ordem correta: banco antes do cluster — o gate de destroy do cluster
+4. Coletar evidencias da janela (plan, apply, saida do Flyway, teste de conectividade e
+   `EXPLAIN (ANALYZE, BUFFERS)` conforme o [plano de performance](../../database/performance-review.md)).
+5. Destruir na ordem correta: banco antes do cluster — o gate de destroy do cluster
    recusa rodar enquanto o SG do banco existir.
 
 Riscos que permanecem abertos, herdados do ESTADO.md: o segredo JWT historico deve ser
@@ -145,4 +144,4 @@ ficam para a W6, quando os nomes dos jobs estabilizarem.
 
 ---
 
-**Ultima atualizacao:** 2026-09-12 · validacao local sem acesso a AWS.
+**Ultima atualizacao:** 2026-09-13 · validacao local sem acesso a AWS.

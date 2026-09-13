@@ -4,7 +4,7 @@ Levantamento baseado no codigo, nos workflows executados e no ambiente AWS Acade
 efetivamente usado pelo grupo. Quando o planejamento original diverge da execucao, o
 estado real registrado aqui prevalece.
 
-**Atualizado em:** 2026-09-12
+**Atualizado em:** 2026-09-13
 
 **Onda atual:** W3 — dados + contrato
 
@@ -99,19 +99,22 @@ Consequencias:
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
 | Duas OpenAPI divergentes | resolvido na W3: uma unica `openapi.yaml` na raiz, 63 operacoes conferidas contra os controllers |
 | Quatro FKs ausentes | resolvido na W3: migration com as quatro FKs `RESTRICT` e dois indices, validada por Testcontainers sobre base vazia |
+| Nodes sem identidade de cliente do banco | resolvido na W3: `db_client_sg_id` anexado aos nodes e autorizado como origem exclusiva do RDS |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
 ## Proximo passo recomendado
 
 As quatro frentes locais da W3 estao concluidas e com CI verde. Os cinco PRs de
-implementacao da onda foram mergeados; o detalhamento e as provas executadas estao em
-[evidence/w3/README.md](evidence/w3/README.md).
+implementacao e o PR #10 de modelo de dados foram mergeados. Este PR #9 conclui a
+consolidacao documental com os artefatos complementares de escolha do banco,
+relacionamentos, diagrama ER, performance e RFC-003. O detalhamento e as provas executadas
+estao em [evidence/w3/README.md](evidence/w3/README.md).
 
 O que resta exige credenciais do Academy:
 
-1. concluir a consolidacao dos PRs de documentacao #9 e #10;
-2. abrir a janela, subir VPC/EKS e confirmar `CREATE` no inventario read-only antes do
+1. abrir a janela, subir VPC/EKS e confirmar `CREATE` no inventario read-only antes do
    primeiro apply do banco;
-3. aplicar o RDS, rodar Flyway na instancia real e validar a conexao da aplicacao;
+2. aplicar o RDS, rodar Flyway na instancia real e validar a conexao da aplicacao;
+3. coletar o `EXPLAIN (ANALYZE, BUFFERS)` e as demais evidencias do Gate G3;
 4. destruir na ordem: banco antes do cluster.
