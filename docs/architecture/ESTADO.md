@@ -6,10 +6,10 @@ estado real registrado aqui prevalece.
 
 **Atualizado em:** 2026-09-13
 
-**Onda atual:** W4 — autenticacao serverless + borda privada
+**Onda atual:** W5 — observabilidade operacional
 
-**Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 liberada. A W3
-mantem somente a coleta quantitativa de `EXPLAIN` como divida de evidencia.
+**Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 concluida e G4
+aprovado. A W3 mantem somente a coleta quantitativa de `EXPLAIN` como divida de evidencia.
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -23,8 +23,8 @@ mantem somente a coleta quantitativa de `EXPLAIN` como divida de evidencia.
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
 | **W3 — dados + contrato** | **gate operacional concluido** | EKS, RDS, Flyway, duas replicas e readiness externo validados; `EXPLAIN` quantitativo pendente |
-| **W4-A / W4-B** | **liberada** | contrato JWT congelado no ADR-004; integrar Lambda, Gateway e borda privada |
-| W5 — observabilidade | nao iniciada | depende do G4 |
+| **W4-A / W4-B** | **concluida** | Lambda/CPF, JWT, Gateway, VPC Link e NLB interno validados no G4; ver [evidence/w4](evidence/w4/README.md) |
+| W5 — observabilidade | **liberada** | dashboards, alertas e operacao a partir das evidencias da W4 |
 | W6 — governanca | nao iniciada | depende do G5 |
 | W7 — entrega | nao iniciada | gravar antes de destruir a infraestrutura final |
 
@@ -106,10 +106,12 @@ Consequencias:
 
 ## Proximo passo recomendado
 
-Executar a W4 em duas frentes coordenadas: Lambda de autenticacao por CPF/JWT e borda
-API Gateway + VPC Link/NLB interno. O contrato do banco e a conectividade real ja estao
-disponiveis. Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3 sem
-bloquear o desenvolvimento da W4.
+Executar a W5: consolidar observabilidade operacional no New Relic, publicar dashboards,
+definir alertas e registrar uma evidencia de alerta disparado. O G4 da W4 esta concluido;
+as evidencias de Lambda, JWT, Gateway, VPC Link, NLB interno e correlacao estao em
+[evidence/w4/README.md](evidence/w4/README.md).
+
+Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3 sem bloquear a W5.
 
 Antes de encerrar a janela AWS, remover workloads e Load Balancer, destruir o RDS e
 somente depois destruir o EKS/VPC. A evidencia detalhada da execucao esta em
