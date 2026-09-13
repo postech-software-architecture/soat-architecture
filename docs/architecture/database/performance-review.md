@@ -2,11 +2,12 @@
 
 ## Estado da evidencia
 
-A revisao estrutural abaixo foi feita sobre as migrations e consultas da aplicacao. Os
-resultados numericos de `EXPLAIN (ANALYZE, BUFFERS)` **ainda nao foram coletados**: eles
-dependem do checkpoint com PostgreSQL executando, migrations aplicadas e volume
-representativo. Nenhum tempo, custo ou quantidade de buffers e apresentado como resultado
-real nesta versao.
+A revisao estrutural abaixo foi feita sobre as migrations e consultas da aplicacao. Na
+janela AWS de 2026-09-13, o RDS foi criado, a aplicacao concluiu o startup/Flyway e duas
+replicas ficaram `Ready`, mas os resultados numericos de
+`EXPLAIN (ANALYZE, BUFFERS)` **ainda nao foram coletados**. Falta carregar e declarar
+uma massa representativa. Nenhum tempo, custo ou quantidade de buffers e apresentado
+como resultado real nesta versao.
 
 ## Indices da W3
 

@@ -1,11 +1,12 @@
-# W3 — dados + contrato · progresso
+# W3 — dados + contrato · evidencia de execucao
 
-Estado da onda apos a sessao de validacao local de 2026-09-12. Tudo que podia ser
-provado sem abrir janela AWS foi executado e verificado; o que resta depende de
-credenciais do Academy e esta isolado na secao final.
+Estado da onda apos a validacao local de 2026-09-12 e a janela AWS de 2026-09-13.
+Infraestrutura, banco, migrations e aplicacao foram exercitados na conta do AWS
+Academy por pipelines na `main`.
 
-**Situacao:** as quatro frentes estao implementadas e com CI verde. A onda esta
-**pronta para a janela AWS**, ainda nao concluida.
+**Situacao:** gate operacional da W3 concluido e dependencia da W4 liberada. A coleta
+quantitativa de `EXPLAIN (ANALYZE, BUFFERS)` continua registrada como evidencia de
+performance pendente, sem numeros inventados.
 
 ---
 
@@ -13,10 +14,10 @@ credenciais do Academy e esta isolado na secao final.
 
 | # | Frente | Estado | Prova |
 |---|---|---|---|
-| 1 | 4 FKs + indices, validadas em base vazia | **pronta** | `DatabaseIntegrityMigrationIT` (5 testes) + suite completa verde |
-| 2 | OpenAPI canonica unica | **pronta** | duplicata removida; 63 operacoes conferidas contra os controllers |
-| 3 | Terraform do RDS por criacao nova | **pronta** | `validate` OK; gates de inventario e plan exercitados |
-| 4 | Documentacao de dados (ER, PostgreSQL, relacionamentos, performance) | **pronta** | [modelo consolidado](../../data/modelo-de-dados.md), [diagrama ER](../../diagrams/database-er.mmd), [relacionamentos](../../database/relationships.md) e [performance](../../database/performance-review.md) |
+| 1 | 4 FKs + indices, validadas em base vazia | **concluida** | `DatabaseIntegrityMigrationIT` (5 testes), suite completa e boot real com Flyway |
+| 2 | OpenAPI canonica unica | **concluida** | duplicata removida; 63 operacoes conferidas contra os controllers |
+| 3 | Terraform do RDS por criacao nova | **concluida** | plan, apply, validacao AWS e rotacao de senha executados na `main` |
+| 4 | Documentacao de dados (ER, PostgreSQL, relacionamentos, performance) | **parcial** | modelo, ER e relacionamentos concluidos; medicao numerica de `EXPLAIN` pendente |
 
 ### Pull requests
 
@@ -26,7 +27,9 @@ credenciais do Academy e esta isolado na secao final.
 | `workshop-service-fase1` | [#68](https://github.com/postech-software-architecture/workshop-service-fase1/pull/68) | `docs/w3-openapi-canonical` | **mergeada**; CI verde |
 | `workshop-service-fase1` | [#66](https://github.com/postech-software-architecture/workshop-service-fase1/pull/66) | `fix/w3-disable-auto-deploy` | **mergeada**; CI verde |
 | `workshop-infra-database` | [#3](https://github.com/postech-software-architecture/workshop-infra-database/pull/3) | `feat/w3-database-infrastructure` | **mergeada**; CI verde |
+| `workshop-infra-database` | [#4](https://github.com/postech-software-architecture/workshop-infra-database/pull/4) | `fix/read-cluster-contract-before-plan` | **mergeada**; corrige bootstrap do primeiro plan |
 | `workshop-infra-kubernetes` | [#6](https://github.com/postech-software-architecture/workshop-infra-kubernetes/pull/6) | `feat/w3-cluster-db-access` | **mergeada**; CI verde |
+| `workshop-service-fase1` | [#69](https://github.com/postech-software-architecture/workshop-service-fase1/pull/69) | `fix/public-aws-load-balancer` | **mergeada**; smoke test externo liberado |
 
 ## 2. Integridade do banco
 
@@ -85,6 +88,11 @@ O acoplamento entre cluster e banco e feito por um unico id, verificado nesta se
 O repo de banco nao declara nenhum recurso de VPC ou EKS — criterio do gate G3,
 conferido por busca direta nos arquivos `.tf`.
 
+Na janela real, o contrato entregou a VPC `vpc-06b5e9b7a9c84322d` e as subnets privadas
+`subnet-0f0aac0ed23de948f` e `subnet-033492965a9fb78d2`. O RDS foi criado nessas
+subnets, permaneceu `publicly_accessible = false` e aceitou 5432 somente pelo SG de
+identidade publicado pelo cluster. Credenciais e valores sensiveis nao sao registrados.
+
 ## 5. Gates de seguranca — exercitados localmente
 
 Os scripts que protegem a janela AWS foram testados com harness, sem tocar na nuvem.
@@ -124,24 +132,56 @@ automatico entre as rotas do spec e as declaradas nos controllers nao encontrou
 **nenhuma rota implementada ausente do contrato**. O endpoint publico de status usa
 `{numero}`, como exigido.
 
-## 7. O que falta — depende da AWS
+## 7. Execucao na AWS Academy
 
-Nada abaixo pode avancar sem credenciais do Academy. Esta e a fronteira onde esta
-sessao para.
+| Etapa | Evidencia | Resultado |
+|---|---|---|
+| VPC/EKS e contrato de rede | [Apply EKS 34766159303](https://github.com/postech-software-architecture/workshop-infra-kubernetes/actions/runs/34766159303) | cluster `workshop-eks`, VPC e duas subnets privadas criados |
+| Primeiro plan do banco | [Run 34767280981](https://github.com/postech-software-architecture/workshop-infra-database/actions/runs/34767280981) | falhou com seguranca antes de criar recursos; revelou leitura prematura do data source |
+| Correcao do bootstrap | [PR database #4](https://github.com/postech-software-architecture/workshop-infra-database/pull/4) | outputs do cluster lidos diretamente do state S3 antes do primeiro plan |
+| Plan real do RDS | [Run 34769155815](https://github.com/postech-software-architecture/workshop-infra-database/actions/runs/34769155815) | `3 add, 0 change, 0 destroy`; somente RDS, subnet group e DB SG |
+| Apply e invariantes do RDS | [Run 34769425980](https://github.com/postech-software-architecture/workshop-infra-database/actions/runs/34769425980) | criacao e validacao pos-apply verdes |
+| Rotacao da senha master | [Run 34770902869](https://github.com/postech-software-architecture/workshop-infra-database/actions/runs/34770902869) | update in-place e validacao pos-apply verdes; segredo sincronizado sem registrar o valor |
+| Primeiro deploy da aplicacao | [Run 34771314525](https://github.com/postech-software-architecture/workshop-service-fase1/actions/runs/34771314525) | duas replicas prontas; revelou Load Balancer no esquema interno padrao |
+| Correcao da exposicao de teste | [PR aplicacao #69](https://github.com/postech-software-architecture/workshop-service-fase1/pull/69) | Service declarou `internet-facing` e ganhou gate de CI |
+| Deploy final e smoke test | [Run 34772090064](https://github.com/postech-software-architecture/workshop-service-fase1/actions/runs/34772090064) | rollout verde; readiness publico respondeu HTTP 200 |
 
-1. Abrir a janela AWS e subir VPC/EKS pelo `workshop-infra-kubernetes`.
-2. Rodar o inventario read-only e confirmar `CREATE` antes do primeiro apply do banco.
-3. Aplicar o RDS, executar Flyway contra a instancia real e validar a conexao da
-   aplicacao pelo `db_client_sg`.
-4. Coletar evidencias da janela (plan, apply, saida do Flyway, teste de conectividade e
-   `EXPLAIN (ANALYZE, BUFFERS)` conforme o [plano de performance](../../database/performance-review.md)).
-5. Destruir na ordem correta: banco antes do cluster — o gate de destroy do cluster
-   recusa rodar enquanto o SG do banco existir.
+O endpoint observado foi
+`k8s-workshop-workshop-e971a01c36-299e3afd7e4c1602.elb.us-east-1.amazonaws.com`.
+O DNS resolveu para endereco publico e `GET /actuator/health/readiness` respondeu 200.
+Esse DNS e efemero e serve como evidencia da janela, nao como contrato permanente.
 
-Riscos que permanecem abertos, herdados do ESTADO.md: o segredo JWT historico deve ser
-regerado na janela da W4 e nunca reutilizado; os required status checks definitivos
-ficam para a W6, quando os nomes dos jobs estabilizarem.
+O Flyway executa antes de a aplicacao concluir o startup. Portanto, as duas replicas
+`Ready` comprovam que o schema real foi migrado e que os pods alcancaram o RDS privado.
+O workflow atual nao captura a saida detalhada do Flyway: essa e uma inferencia
+operacional identificada, nao um log bruto de migration.
+
+## 8. Correcoes reveladas pela execucao real
+
+O primeiro plan do database falhou porque `terraform console` avalia apenas o state
+atual. Antes do primeiro plan, o data source `terraform_remote_state` ainda aparecia
+como `(known after apply)`, embora o state do cluster ja contivesse uma VPC valida. A
+PR #4 removeu esse impasse sem relaxar os gates de seguranca.
+
+O primeiro deploy ficou saudavel dentro do cluster, mas o AWS Load Balancer Controller
+adotou seu esquema padrao interno. A PR #69 tornou a exposicao de smoke test
+explicitamente `internet-facing`; o segundo deploy produziu um novo ELB e permitiu a
+validacao externa. Na W4, a borda oficial continua sendo API Gateway + VPC Link/NLB
+interno; o acesso direto temporario nao deve ser apresentado como topologia final.
+
+## 9. Pendencias que nao bloqueiam o inicio da W4
+
+- coletar e versionar os JSONs de `EXPLAIN (ANALYZE, BUFFERS)` com massa declarada,
+  conforme o [plano de performance](../../database/performance-review.md);
+- capturar log detalhado de Flyway em uma proxima execucao se a banca exigir prova
+  direta alem do readiness;
+- fechar o acesso direto ao Load Balancer quando a borda privada da W4 estiver pronta;
+- ao encerrar a janela, remover primeiro os workloads/ELB, depois destruir o banco e
+  somente entao o cluster.
+
+Riscos herdados: o segredo JWT historico deve ser regenerado na janela da W4 e nunca
+reutilizado; os required status checks definitivos ficam para a W6.
 
 ---
 
-**Ultima atualizacao:** 2026-09-13 · validacao local sem acesso a AWS.
+**Ultima atualizacao:** 2026-09-13 · gate operacional executado na AWS Academy.
