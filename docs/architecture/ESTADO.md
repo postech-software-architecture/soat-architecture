@@ -4,11 +4,11 @@ Levantamento baseado no codigo, nos workflows executados e no ambiente AWS Acade
 efetivamente usado pelo grupo. Quando o planejamento original diverge da execucao, o
 estado real registrado aqui prevalece.
 
-**Atualizado em:** 2026-09-12
+**Atualizado em:** 2026-09-13
 
 **Onda atual:** W3 — dados + contrato
 
-**Situacao:** W0, W1 e W2 concluidas
+**Situacao:** W0, W1 e W2 concluidas; W3 implementada e verde em CI, aguardando janela AWS
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -21,7 +21,7 @@ estado real registrado aqui prevalece.
 | **W0 — spikes de risco** | **concluida** | LabRole, VPC Link/NLB, OTLP/New Relic e backend remoto aprovados |
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
-| **W3 — dados + contrato** | **em execucao** | quatro trilhos preparados; CI, merge, plans, RDS, Flyway e `EXPLAIN` real pendentes |
+| **W3 — dados + contrato** | **pronta para a janela AWS** | quatro frentes implementadas e com CI verde; ver [evidence/w3/README.md](evidence/w3/README.md) |
 | W4-A / W4-B | nao iniciada | depende do G3; contrato JWT ja congelado no ADR-004 |
 | W5 — observabilidade | nao iniciada | depende do G4 |
 | W6 — governanca | nao iniciada | depende do G5 |
@@ -97,33 +97,24 @@ Consequencias:
 | Item | Tratamento |
 |---|---|
 | Segredo JWT historico esta comprometido | default ja removido; gerar valor novo na janela da W4 e nunca reutilizar o valor do historico |
-| Duas OpenAPI divergentes | trilho final `16cbb7a` (precedido por `1602856`): raiz 3.1 como unica fonte canônica de runtime, `{numero}` corrigido e copia de `src` removida; CI/merge pendentes apos o safety CD `ecd88fd` |
-| Quatro FKs ausentes | trilho final `f62898b` (precedido por `56e56d2`): migration com `ON DELETE RESTRICT`, dois indices existentes reutilizados, dois novos e teste preparado para verificar base vazia + seed; CI/merge pendentes apos o safety CD `ecd88fd` |
-| Nodes sem identidade de cliente do banco | trilho final `97fd209` (precedido por `2130563` e `9e4cffd`) associa `db_client_sg_id` ao node group e protege o destroy; CI, merge e `terraform plan` pendentes |
+| Duas OpenAPI divergentes | resolvido na W3: uma unica `openapi.yaml` na raiz, 63 operacoes conferidas contra os controllers |
+| Quatro FKs ausentes | resolvido na W3: migration com as quatro FKs `RESTRICT` e dois indices, validada por Testcontainers sobre base vazia |
+| Nodes sem identidade de cliente do banco | resolvido na W3: `db_client_sg_id` anexado aos nodes e autorizado como origem exclusiva do RDS |
 | Credenciais temporarias | renovar no inicio da janela; nao iniciar apply perto da expiracao |
 | Required status checks definitivos | W6, depois que os nomes dos jobs estabilizarem |
 
-## W3 em execucao
+## Proximo passo recomendado
 
-Os trilhos paralelos produziram artefatos locais ainda nao equivalentes a entrega implantada:
+As quatro frentes locais da W3 estao concluidas e com CI verde. Os cinco PRs de
+implementacao e o PR #10 de modelo de dados foram mergeados. Este PR #9 conclui a
+consolidacao documental com os artefatos complementares de escolha do banco,
+relacionamentos, diagrama ER, performance e RFC-003. O detalhamento e as provas executadas
+estao em [evidence/w3/README.md](evidence/w3/README.md).
 
-1. Terraform de banco no commit final `3d7afd9` (precedido por `1971b71`, `02a1a5c` e
-   `efb60fd`), preparado para criacao nova, inventario/import condicional e operacoes
-   seguras;
-2. safety CD da aplicacao no commit `ecd88fd`, que exige deploy manual durante a W3 e deve
-   ser mergeado antes dos trilhos de migration e OpenAPI;
-3. migration e teste no commit final `f62898b` (precedido por `56e56d2`), preparados para
-   verificar quatro FKs `ON DELETE RESTRICT`, o seed e seis indices inspecionados;
-4. OpenAPI no commit final `16cbb7a` (precedido por `1602856`), com a raiz eleita como unica
-   fonte canônica de runtime e a copia de `src` removida;
-5. acesso do cluster no commit final `97fd209` (precedido por `2130563` e `9e4cffd`),
-   preparado para associar `db_client_sg_id` aos nodes do EKS e bloquear o destroy enquanto
-   o security group do banco existir;
-6. ER pos-FK e documentacao de dados preparados em
-   [evidence/w3/README.md](evidence/w3/README.md).
+O que resta exige credenciais do Academy:
 
-O proximo passo e levar os trilhos por CI/revisao/merge. Depois, abrir uma janela AWS para
-subir VPC/EKS, criar o RDS, executar Flyway, validar a conexao, coletar `EXPLAIN` real e
-preservar evidencias antes do destroy. O encerramento da janela deve destruir **primeiro o
-RDS pelo repositorio de banco e somente depois o cluster/VPC**. Ate la, o Gate G3 permanece
-aberto.
+1. abrir a janela, subir VPC/EKS e confirmar `CREATE` no inventario read-only antes do
+   primeiro apply do banco;
+2. aplicar o RDS, rodar Flyway na instancia real e validar a conexao da aplicacao;
+3. coletar o `EXPLAIN (ANALYZE, BUFFERS)` e as demais evidencias do Gate G3;
+4. destruir na ordem: banco antes do cluster.
