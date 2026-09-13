@@ -41,6 +41,7 @@ Indice central da documentacao arquitetural dos quatro repositorios da entrega.
 | [W0/W2](evidence/w0-w2/README.md) | Spikes, EKS, aplicacao instrumentada e destroy |
 | [W3](evidence/w3/README.md) | Integridade, runs de EKS/RDS, deploy, Flyway e readiness publico |
 | [W4](evidence/w4/README.md) | Lambda CPF, JWT, Gateway, VPC Link, NLB interno e G4 |
+| [Contrato W5](observability/w5-observability-contract.md) | Sinais, métricas, dashboards, alerta e G5 no New Relic |
 | [Secrets](runbooks/secrets.md) | Inventario, renovacao e rotacao |
 | [Modelo de dados](data/modelo-de-dados.md) | ER, relacionamentos, politica de remocao e revisao de indices (W3) |
 
@@ -66,7 +67,7 @@ documentos de planejamento. Este resumo registra o estado executado:
 | W2 | EKS/Kustomize, LB Controller, logs JSON/OTLP, correlacao e destroy | **concluida** |
 | W3 | RDS novo, FKs, uma OpenAPI e documentacao de dados | **gate operacional concluido; `EXPLAIN` pendente** |
 | W4 | Lambda + API Gateway; JWT + NLB interno | **concluida**; G4: 200/401/403/422, correlacao e sem bypass |
-| W5 | Collector, seis dashboards e alertas | **liberada**; G5: alerta disparado |
+| W5 | Collector, seis dashboards e alertas | **em implementacao**; [contrato W5](observability/w5-observability-contract.md); G5: alerta disparado |
 | W6 | pipelines de deploy e governanca finais | G6: quatro pipelines verdes |
 | W7 | diagramas reais, video e PDF | entrega |
 
