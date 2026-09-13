@@ -39,6 +39,7 @@ Indice central da documentacao arquitetural dos quatro repositorios da entrega.
 |---|---|
 | [G1](evidence/g1/README.md) | Branch protection, Environments e secret scanning |
 | [W0/W2](evidence/w0-w2/README.md) | Spikes, EKS, aplicacao instrumentada e destroy |
+| [W3](evidence/w3/README.md) | Integridade do banco, contrato de API e gates pre-apply |
 | [Secrets](runbooks/secrets.md) | Inventario, renovacao e rotacao |
 | [Modelo de dados](data/modelo-de-dados.md) | ER, relacionamentos, politica de remocao e revisao de indices (W3) |
 
