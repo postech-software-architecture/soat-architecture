@@ -6,9 +6,10 @@ estado real registrado aqui prevalece.
 
 **Atualizado em:** 2026-09-13
 
-**Onda atual:** W3 — dados + contrato
+**Onda atual:** W4 — autenticacao serverless + borda privada
 
-**Situacao:** W0, W1 e W2 concluidas; W3 implementada e verde em CI, aguardando janela AWS
+**Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 liberada. A W3
+mantem somente a coleta quantitativa de `EXPLAIN` como divida de evidencia.
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -21,8 +22,8 @@ estado real registrado aqui prevalece.
 | **W0 — spikes de risco** | **concluida** | LabRole, VPC Link/NLB, OTLP/New Relic e backend remoto aprovados |
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
-| **W3 — dados + contrato** | **pronta para a janela AWS** | quatro frentes implementadas e com CI verde; ver [evidence/w3/README.md](evidence/w3/README.md) |
-| W4-A / W4-B | nao iniciada | depende do G3; contrato JWT ja congelado no ADR-004 |
+| **W3 — dados + contrato** | **gate operacional concluido** | EKS, RDS, Flyway, duas replicas e readiness externo validados; `EXPLAIN` quantitativo pendente |
+| **W4-A / W4-B** | **liberada** | contrato JWT congelado no ADR-004; integrar Lambda, Gateway e borda privada |
 | W5 — observabilidade | nao iniciada | depende do G4 |
 | W6 — governanca | nao iniciada | depende do G5 |
 | W7 — entrega | nao iniciada | gravar antes de destruir a infraestrutura final |
@@ -105,16 +106,11 @@ Consequencias:
 
 ## Proximo passo recomendado
 
-As quatro frentes locais da W3 estao concluidas e com CI verde. Os cinco PRs de
-implementacao e o PR #10 de modelo de dados foram mergeados. Este PR #9 conclui a
-consolidacao documental com os artefatos complementares de escolha do banco,
-relacionamentos, diagrama ER, performance e RFC-003. O detalhamento e as provas executadas
-estao em [evidence/w3/README.md](evidence/w3/README.md).
+Executar a W4 em duas frentes coordenadas: Lambda de autenticacao por CPF/JWT e borda
+API Gateway + VPC Link/NLB interno. O contrato do banco e a conectividade real ja estao
+disponiveis. Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3 sem
+bloquear o desenvolvimento da W4.
 
-O que resta exige credenciais do Academy:
-
-1. abrir a janela, subir VPC/EKS e confirmar `CREATE` no inventario read-only antes do
-   primeiro apply do banco;
-2. aplicar o RDS, rodar Flyway na instancia real e validar a conexao da aplicacao;
-3. coletar o `EXPLAIN (ANALYZE, BUFFERS)` e as demais evidencias do Gate G3;
-4. destruir na ordem: banco antes do cluster.
+Antes de encerrar a janela AWS, remover workloads e Load Balancer, destruir o RDS e
+somente depois destruir o EKS/VPC. A evidencia detalhada da execucao esta em
+[evidence/w3/README.md](evidence/w3/README.md).

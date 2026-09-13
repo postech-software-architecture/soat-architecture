@@ -54,8 +54,9 @@ condicional: antes do primeiro apply, o inventario consulta separadamente a inst
 - o plan da W3 deve provar `publicly_accessible = false` e a origem exclusiva
   `db_client_sg_id` na porta 5432;
 - Flyway cria e semeia o schema novo;
-- ha teste Testcontainers preparado para verificar as quatro FKs sobre base vazia + seed;
-  seu resultado permanece pendente da CI;
+- o teste Testcontainers verifica as quatro FKs sobre base vazia + seed e passou na CI;
+- a janela AWS de 2026-09-13 criou o RDS, aplicou Flyway durante o boot e validou a
+  conexao a partir de duas replicas no EKS;
 - ao fim da janela, executar e confirmar primeiro o destroy do RDS pelo repositorio de
   banco; somente depois executar o destroy do cluster/VPC.
 
