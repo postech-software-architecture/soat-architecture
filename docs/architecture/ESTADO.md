@@ -104,12 +104,13 @@ Consequencias:
 
 ## Proximo passo recomendado
 
-As quatro frentes locais da W3 estao concluidas e com CI verde; o detalhamento e as
-provas executadas estao em [evidence/w3/README.md](evidence/w3/README.md).
+As quatro frentes locais da W3 estao concluidas e com CI verde. Os cinco PRs de
+implementacao da onda foram mergeados; o detalhamento e as provas executadas estao em
+[evidence/w3/README.md](evidence/w3/README.md).
 
 O que resta exige credenciais do Academy:
 
-1. revisar e mergear as cinco PRs da onda (as duas de infraestrutura pedem aprovacao);
+1. concluir a consolidacao dos PRs de documentacao #9 e #10;
 2. abrir a janela, subir VPC/EKS e confirmar `CREATE` no inventario read-only antes do
    primeiro apply do banco;
 3. aplicar o RDS, rodar Flyway na instancia real e validar a conexao da aplicacao;

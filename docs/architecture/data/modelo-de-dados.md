@@ -1,7 +1,7 @@
 # Modelo de dados — W3
 
 Documento da frente de dados da W3. O conteudo abaixo foi extraido do schema real,
-aplicando as 19 migrations em ordem sobre um PostgreSQL 15 vazio e consultando o
+aplicando as 20 migrations em ordem sobre um PostgreSQL 15 vazio e consultando o
 catalogo (`information_schema` e `pg_catalog`). Nao ha aqui nenhuma afirmacao obtida
 por leitura manual das migrations.
 

@@ -22,11 +22,11 @@ credenciais do Academy e esta isolado na secao final.
 
 | Repo | PR | Branch | CI |
 |---|---|---|---|
-| `workshop-service-fase1` | [#67](https://github.com/postech-software-architecture/workshop-service-fase1/pull/67) | `feat/w3-database-integrity` | verde *(estava vermelha; ver §3)* |
-| `workshop-service-fase1` | [#68](https://github.com/postech-software-architecture/workshop-service-fase1/pull/68) | `docs/w3-openapi-canonical` | verde |
-| `workshop-service-fase1` | [#66](https://github.com/postech-software-architecture/workshop-service-fase1/pull/66) | `fix/w3-disable-auto-deploy` | verde |
-| `workshop-infra-database` | [#3](https://github.com/postech-software-architecture/workshop-infra-database/pull/3) | `feat/w3-database-infrastructure` | verde · aguarda review |
-| `workshop-infra-kubernetes` | [#6](https://github.com/postech-software-architecture/workshop-infra-kubernetes/pull/6) | `feat/w3-cluster-db-access` | verde · aguarda review |
+| `workshop-service-fase1` | [#67](https://github.com/postech-software-architecture/workshop-service-fase1/pull/67) | `feat/w3-database-integrity` | **mergeada**; CI verde *(estava vermelha; ver §3)* |
+| `workshop-service-fase1` | [#68](https://github.com/postech-software-architecture/workshop-service-fase1/pull/68) | `docs/w3-openapi-canonical` | **mergeada**; CI verde |
+| `workshop-service-fase1` | [#66](https://github.com/postech-software-architecture/workshop-service-fase1/pull/66) | `fix/w3-disable-auto-deploy` | **mergeada**; CI verde |
+| `workshop-infra-database` | [#3](https://github.com/postech-software-architecture/workshop-infra-database/pull/3) | `feat/w3-database-infrastructure` | **mergeada**; CI verde |
+| `workshop-infra-kubernetes` | [#6](https://github.com/postech-software-architecture/workshop-infra-kubernetes/pull/6) | `feat/w3-cluster-db-access` | **mergeada**; CI verde |
 
 ## 2. Integridade do banco
 
@@ -129,7 +129,8 @@ automatico entre as rotas do spec e as declaradas nos controllers nao encontrou
 Nada abaixo pode avancar sem credenciais do Academy. Esta e a fronteira onde esta
 sessao para.
 
-1. Revisar e mergear as 5 PRs (as duas de infraestrutura exigem aprovacao humana).
+1. Concluir a consolidacao dos PRs de documentacao [#9](https://github.com/postech-software-architecture/soat-architecture/pull/9)
+   e [#10](https://github.com/postech-software-architecture/soat-architecture/pull/10), preservando os artefatos complementares.
 2. Abrir a janela AWS e subir VPC/EKS pelo `workshop-infra-kubernetes`.
 3. Rodar o inventario read-only e confirmar `CREATE` antes do primeiro apply do banco.
 4. Aplicar o RDS, executar Flyway contra a instancia real e validar a conexao da
