@@ -12,7 +12,7 @@ implantado.
 
 | Entrega | Evidencia | Estado |
 |---|---|---|
-| Safety CD da aplicacao | commit `e9bb066` de `workshop-service-fase1`, exigindo deploy manual durante a W3 | preparado; CI/merge pendentes e pre-requisito dos merges de migration/OpenAPI |
+| Safety CD da aplicacao | commit `ecd88fd` de `workshop-service-fase1`, exigindo deploy manual durante a W3 | preparado; CI/merge pendentes e pre-requisito dos merges de migration/OpenAPI |
 | Quatro FKs com `ON DELETE RESTRICT` e identidade tecnica `system.webhook` | commit final `f62898b`, precedido por `56e56d2`, de `workshop-service-fase1` | preparado; CI/merge pendentes |
 | Quatro indices das FKs novas (dois existentes + dois novos) e dois indices de FKs antigas | mesma migration; inventario em [relationships.md](../../database/relationships.md) | seis preparados para inspecao; CI pendente |
 | Teste de migrations, seed, FKs, orfaos, exclusao e indices | `DatabaseIntegrityMigrationIT`, commit final `f62898b`, precedido por `56e56d2` | teste preparado para verificar; resultado de CI pendente |
@@ -41,7 +41,7 @@ pendente.
 
 ## Pendente de CI e merge
 
-- executar e aprovar a pipeline e o merge do safety CD `e9bb066` **antes** de integrar os
+- executar e aprovar a pipeline e o merge do safety CD `ecd88fd` **antes** de integrar os
   trilhos de migration e OpenAPI no mesmo repositorio;
 - depois desse pre-requisito, executar e aprovar as pipelines dos trilhos de migration,
   OpenAPI, banco e acesso do cluster (`f62898b`, `16cbb7a`, `3d7afd9` e `97fd209`);
