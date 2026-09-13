@@ -24,7 +24,7 @@ aprovado. A W3 mantem somente a coleta quantitativa de `EXPLAIN` como divida de 
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
 | **W3 — dados + contrato** | **gate operacional concluido** | EKS, RDS, Flyway, duas replicas e readiness externo validados; `EXPLAIN` quantitativo pendente |
 | **W4-A / W4-B** | **concluida** | Lambda/CPF, JWT, Gateway, VPC Link e NLB interno validados no G4; ver [evidence/w4](evidence/w4/README.md) |
-| W5 — observabilidade | **liberada** | dashboards, alertas e operacao a partir das evidencias da W4 |
+| W5 — observabilidade | **em implementacao** | [contrato de sinais](observability/w5-observability-contract.md), dashboards, alertas e operacao a partir das evidencias da W4 |
 | W6 — governanca | nao iniciada | depende do G5 |
 | W7 — entrega | nao iniciada | gravar antes de destruir a infraestrutura final |
 
@@ -106,8 +106,9 @@ Consequencias:
 
 ## Proximo passo recomendado
 
-Executar a W5: consolidar observabilidade operacional no New Relic, publicar dashboards,
-definir alertas e registrar uma evidencia de alerta disparado. O G4 da W4 esta concluido;
+Executar a W5 conforme o [contrato de observabilidade](observability/w5-observability-contract.md):
+consolidar observabilidade operacional no New Relic, publicar dashboards, definir alertas
+e registrar uma evidencia de alerta disparado. O G4 da W4 esta concluido;
 as evidencias de Lambda, JWT, Gateway, VPC Link, NLB interno e correlacao estao em
 [evidence/w4/README.md](evidence/w4/README.md).
 
