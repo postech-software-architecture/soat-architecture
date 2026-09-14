@@ -1,0 +1,11 @@
+{
+  "name": "W5 - Auth Serverless",
+  "description": "CPF authentication Lambda signals.",
+  "permissions": "PUBLIC_READ_ONLY",
+  "pages": [{"name":"Auth","widgets":[
+    {"title":"CPF attempts","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.auth.cpf.attempt.count) FROM Metric TIMESERIES"}]}},
+    {"title":"CPF failures","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.auth.cpf.failure.count) FROM Metric FACET outcome TIMESERIES"}]}},
+    {"title":"Lambda duration","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT percentile(duration.ms, 95) FROM Span WHERE service.name = 'workshop-auth-cpf' TIMESERIES"}]}},
+    {"title":"Lambda errors","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT count(*) FROM Span WHERE service.name = 'workshop-auth-cpf' AND error.type IS NOT NULL"}]}}
+  ]}]
+}
