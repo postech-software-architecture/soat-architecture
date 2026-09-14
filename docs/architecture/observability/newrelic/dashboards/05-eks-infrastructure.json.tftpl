@@ -1,0 +1,11 @@
+{
+  "name": "W5 - EKS Infrastructure",
+  "description": "EKS, Kubernetes and collector health signals.",
+  "permissions": "PUBLIC_READ_ONLY",
+  "pages": [{"name":"Infrastructure","widgets":[
+    {"title":"Node CPU","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.node.cpuUsageNanoCores) FROM Metric FACET k8s.node.name TIMESERIES"}]}},
+    {"title":"Pod restarts","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(k8s.container.restarts) FROM Metric FACET k8s.pod.name TIMESERIES"}]}},
+    {"title":"Collector telemetry","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT count(*) FROM Log WHERE service.name = 'nr-k8s-otel-collector'"}]}},
+    {"title":"Workload availability","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.deployment.available) FROM Metric FACET k8s.deployment.name TIMESERIES"}]}}
+  ]}]
+}

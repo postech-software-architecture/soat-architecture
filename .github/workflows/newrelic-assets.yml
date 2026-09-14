@@ -1,0 +1,92 @@
+name: New Relic W5 assets
+
+on:
+  pull_request:
+    paths:
+      - 'docs/architecture/observability/newrelic/**'
+      - '.github/workflows/newrelic-assets.yml'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Digite APLICAR NEW RELIC W5 para permitir apply'
+        required: true
+        type: string
+      enable_notifications:
+        description: 'Criar destino/canal/workflow de notificacao'
+        required: true
+        default: false
+        type: boolean
+      enable_synthetic:
+        description: 'Criar monitor sintetico (nasce DISABLED)'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: newrelic-w5-assets
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validacao estatica
+        run: python3 docs/architecture/observability/newrelic/scripts/validate-assets.py
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.9.8'
+      - name: Terraform fmt
+        working-directory: docs/architecture/observability/newrelic/terraform
+        run: terraform fmt -check -recursive
+      - name: Terraform init sem backend
+        working-directory: docs/architecture/observability/newrelic/terraform
+        run: terraform init -backend=false -input=false
+      - name: Terraform validate
+        working-directory: docs/architecture/observability/newrelic/terraform
+        run: terraform validate
+
+  apply:
+    if: github.event_name == 'workflow_dispatch' && inputs.confirmation == 'APLICAR NEW RELIC W5'
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validacao estatica
+        run: python3 docs/architecture/observability/newrelic/scripts/validate-assets.py
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.9.8'
+      - name: Terraform init sem backend
+        working-directory: docs/architecture/observability/newrelic/terraform
+        run: terraform init -backend=false -input=false
+      - name: Plan
+        working-directory: docs/architecture/observability/newrelic/terraform
+        env:
+          TF_VAR_account_id: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          TF_VAR_api_key: ${{ secrets.NEW_RELIC_API_KEY }}
+          TF_VAR_notification_enabled: ${{ inputs.enable_notifications }}
+          TF_VAR_synthetic_enabled: ${{ inputs.enable_synthetic }}
+          TF_VAR_notification_destination_url: ${{ secrets.NEW_RELIC_NOTIFICATION_URL }}
+          TF_VAR_synthetic_uri: ${{ vars.NEW_RELIC_SYNTHETIC_URI }}
+        run: terraform plan -input=false -out=w5.tfplan
+      - name: Apply confirmado
+        working-directory: docs/architecture/observability/newrelic/terraform
+        env:
+          TF_VAR_account_id: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          TF_VAR_api_key: ${{ secrets.NEW_RELIC_API_KEY }}
+          TF_VAR_notification_enabled: ${{ inputs.enable_notifications }}
+          TF_VAR_synthetic_enabled: ${{ inputs.enable_synthetic }}
+          TF_VAR_notification_destination_url: ${{ secrets.NEW_RELIC_NOTIFICATION_URL }}
+          TF_VAR_synthetic_uri: ${{ vars.NEW_RELIC_SYNTHETIC_URI }}
+        run: terraform apply -input=false -auto-approve w5.tfplan
