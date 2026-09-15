@@ -57,6 +57,13 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.confirmation == 'APLICAR NEW RELIC W5'
     runs-on: ubuntu-latest
     environment: prod
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+      TFSTATE_BUCKET: ${{ vars.TFSTATE_BUCKET }}
+      TFSTATE_LOCK_TABLE: ${{ vars.TFSTATE_LOCK_TABLE }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -67,9 +74,15 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: '1.9.8'
-      - name: Terraform init sem backend
+      - name: Terraform init com state remoto
         working-directory: docs/architecture/observability/newrelic/terraform
-        run: terraform init -backend=false -input=false
+        run: |
+          test -n "${TFSTATE_BUCKET:-}" || { echo '::error::Variable TFSTATE_BUCKET ausente no Environment prod.' >&2; exit 1; }
+          test -n "${TFSTATE_LOCK_TABLE:-}" || { echo '::error::Variable TFSTATE_LOCK_TABLE ausente no Environment prod.' >&2; exit 1; }
+          terraform init -input=false \
+            -backend-config="bucket=${TFSTATE_BUCKET}" \
+            -backend-config="region=${AWS_REGION}" \
+            -backend-config="dynamodb_table=${TFSTATE_LOCK_TABLE}"
       - name: Plan
         working-directory: docs/architecture/observability/newrelic/terraform
         env:
