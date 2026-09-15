@@ -42,7 +42,7 @@ Atributos de recurso conferidos nos spans: `deployment.environment = 'prod'` e
 | 3 | Mesmo `correlationId` na Lambda e na aplicacao | **parcial** — o identificador aparece nos logs das duas pontas, mas nao ha trace unico ligando-as, porque traces da Lambda nao chegam |
 | 4 | Incidente aberto por falha controlada | **atendido** — incidente `ACTIVATED`, prioridade `CRITICAL`, aberto em 2026-09-15 19:13:19Z |
 | 5 | Notificacao entregue | workflow `W5 operational workflow` ativo com destino configurado; confirmar a chamada no destino |
-| 6 | Incidente recuperado | pendente — carga interrompida, aguardando a janela seguinte |
+| 6 | Incidente recuperado | **atendido** — fechado em 19:20:19Z, seis minutos apos a abertura |
 | 7 | Busca sem CPF, JWT, senha ou segredo | **atendido** — quatro buscas em `prod`, todas com zero ocorrencias |
 
 A falha controlada foi produzida com carga sustentada, nao com tres chamadas
@@ -61,10 +61,13 @@ workshop-service query result is >= 3.0 for 5 minutes
 on 'W5 - three processing failures in five minutes'
 ```
 
+Interrompida a carga, o incidente fechou sozinho as 19:20:19Z, seis minutos apos
+a abertura, completando o ciclo que o G5 pede: disparo, notificacao e recuperacao.
+
 O procedimento corrigido esta no [runbook](../../runbooks/w5-execucao.md). Vale
-notar o atraso: a condicao usa janela de 60s com `aggregationDelay` de 120s, entao
-a avaliacao so conclui alguns minutos depois de a carga terminar — conferir cedo
-demais leva a crer que o alerta nao disparou.
+notar o atraso nos dois sentidos: a condicao usa janela de 60s com
+`aggregationDelay` de 120s, e a recuperacao exige 300s abaixo do limiar. Conferir
+cedo demais leva a crer que o alerta nao disparou, ou que nao recuperou.
 
 O fluxo foi exercitado contra o ambiente em 2026-09-15: autenticacao por CPF na
 Lambda devolvendo 200 com JWT para documento valido e 422 para invalido, com e sem
