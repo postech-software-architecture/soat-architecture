@@ -58,13 +58,13 @@ Os 31 widgets foram executados contra a conta: nenhum tem erro de sintaxe.
 
 | Dashboard | Widgets com dados |
 |---|---|
-| W5 - Auth Serverless | 4/4 |
 | W5 - EKS Infrastructure | 7/7 |
 | W5 - Service Overview | 6/6 |
 | W5 - Dependencies and Correlation | 5/6 |
-| W5 - Ordem de Servico Lifecycle | 3/4 |
-| W5 - Ordem de Servico Reliability | 3/4 |
-| **total** | **28/31** |
+| W5 - Auth Serverless | 4/4 |
+| W5 - Ordem de Servico Lifecycle | 1/4 |
+| W5 - Ordem de Servico Reliability | 1/4 |
+| **total** | **24/31** |
 
 Medido apos exercitar os endpoints: autenticacao por CPF na Lambda com documento
 valido e invalido, login dos usuarios de demonstracao, criacao de ordem de
@@ -77,11 +77,21 @@ O painel da Lambda fechou depois de trocar os dois widgets de span por metricas
 de CPF e de banco. Amostra da execucao: p50 4,1 ms e p95 774 ms, este ultimo
 refletindo o cold start.
 
-Os tres widgets ainda vazios dependem de sinais que esta execucao nao produziu:
-duracao por etapa exige uma ordem de servico atravessando execucao e entrega,
-erros de integracao exigem falha de e-mail ou webhook, e a busca por
-`correlationId` no log so retorna quando a aplicacao registra a requisicao em
-nivel informativo.
+Os seis widgets vazios dos paineis de ordem de servico tem uma causa unica, e nao
+falta de trafego: os contadores de negocio chegavam com temporalidade cumulativa,
+que a New Relic nao soma. `count()` devolvia sete amostras de
+`workshop.ordem_servico.created.count` e seis de `processing.error.count`, com os
+atributos corretos, enquanto `sum()` e ate `max()` devolviam zero. Corrigido em
+[service-fase1 #75](https://github.com/postech-software-architecture/workshop-service-fase1/pull/75),
+que fixa a temporalidade em delta; a medicao acima ainda e anterior a esse deploy.
+
+O widget de `correlationId` depende de a aplicacao registrar a requisicao em nivel
+informativo, o que esta execucao nao produziu.
+
+A contagem foi refeita com um validador que exige valor numerico diferente de
+zero. A versao anterior tratava uma faceta preenchida como dado, entao
+`{'facet': 'execucao', 'sum...': 0.0}` passava por painel populado e inflava o
+total.
 
 ### Alerta
 

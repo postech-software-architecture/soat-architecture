@@ -10,7 +10,7 @@ estado real registrado aqui prevalece.
 
 **Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 concluida e G4
 aprovado. A W5 esta implantada com telemetria real de cluster, aplicacao e Lambda
-na conta New Relic 8494284: **28 dos 31 widgets** dos seis dashboards tem dados,
+na conta New Relic 8494284: **24 dos 31 widgets** dos seis dashboards tem dados,
 medidos apos exercitar os endpoints. Para fechar o G5 falta confirmar o ciclo do
 alerta — incidente aberto, notificacao entregue e recuperacao — e registrar as
 capturas sanitizadas. A W3 mantem a coleta quantitativa de `EXPLAIN` como divida.
