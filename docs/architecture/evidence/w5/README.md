@@ -43,7 +43,7 @@ Atributos de recurso conferidos nos spans: `deployment.environment = 'prod'` e
 | 4 | Incidente aberto por falha controlada | **atendido** — incidente `ACTIVATED`, prioridade `CRITICAL`, aberto em 2026-09-15 19:13:19Z |
 | 5 | Notificacao entregue | workflow `W5 operational workflow` ativo com destino configurado; confirmar a chamada no destino |
 | 6 | Incidente recuperado | pendente — carga interrompida, aguardando a janela seguinte |
-| 7 | Busca sem CPF, JWT, senha ou segredo | **parcial** — ver higiene |
+| 7 | Busca sem CPF, JWT, senha ou segredo | **atendido** — quatro buscas em `prod`, todas com zero ocorrencias |
 
 A falha controlada foi produzida com carga sustentada, nao com tres chamadas
 seguidas: a condicao usa `thresholdOccurrences: ALL` e exige tres ou mais em cada
@@ -136,10 +136,19 @@ para abrir o incidente.
 
 ### Higiene
 
-Na validacao local com o mesmo seed: zero ocorrencias do documento do cliente, do
-prefixo `eyJ` de JWT e da senha de demonstracao nos logs da aplicacao. A resposta
-da API devolve o documento mascarado (`**.*22.***/0001-**`). A varredura em `prod`
-ainda precisa ser registrada.
+Varredura em `prod` sobre janela de duas horas, cobrindo todo o fluxo exercitado
+— autenticacao por CPF, login dos usuarios de demonstracao, criacao de ordem,
+transicoes validas e invalidas:
+
+| Busca | Ocorrencias |
+|---|---|
+| CPF `12345678909` usado na autenticacao | 0 |
+| documento `11222333000181` do cliente da ordem | 0 |
+| prefixo `eyJ`, inicio de qualquer JWT | 0 |
+| senha `password` das contas de demonstracao | 0 |
+
+A resposta da API devolve o documento mascarado (`**.*22.***/0001-**`) e o JWT
+emitido pela Lambda nao carrega o CPF em nenhum claim.
 
 ## Defeitos corrigidos durante a execucao
 
