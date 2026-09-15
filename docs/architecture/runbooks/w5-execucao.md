@@ -102,6 +102,20 @@ As tres devem devolver **422**. Verificado em ambiente local: o contador sobe
 para exatamente 3, com as tags `stage=execucao`, `operation=iniciar`,
 `outcome=error` e `environment`.
 
+**Tres erros de uma vez nao abrem o incidente.** A condicao usa
+`thresholdOccurrences: ALL`, entao exige tres ou mais em **cada** janela de um
+minuto dentro dos cinco, e nao o total do periodo. Disparando as tres chamadas
+em sequencia, a serie fica assim e a condicao nunca se satisfaz:
+
+```
+minuto 1: 0   minuto 2: 0   minuto 3: 0   minuto 4: 3   minuto 5: 0
+```
+
+Para abrir o incidente, sustente o erro ao longo da janela — por exemplo quatro
+chamadas por minuto durante sete minutos, repetindo a mesma transicao invalida
+sobre a mesma ordem. Depois de confirmar a abertura e a notificacao, pare de
+gerar erros e aguarde a janela seguinte para a recuperacao.
+
 Dois detalhes que evitam falso negativo:
 
 - o incremento **nao** passa por `afterCommit`, de proposito, porque o caminho

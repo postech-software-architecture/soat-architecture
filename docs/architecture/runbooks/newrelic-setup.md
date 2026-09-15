@@ -2,10 +2,16 @@
 
 **Status:** spike exploratório concluído em 2026-09-09. **Não é decisão de arquitetura.**
 
-> ⚠️ O ADR-006 vigente no plano define **OpenTelemetry + Grafana Cloud**. Este runbook
-> documenta um spike de New Relic pedido para avaliar complexidade. Enquanto o ADR-006 não
-> for reescrito, **o backend oficial continua sendo o Grafana Cloud**. Ver
-> [ESTADO.md](../ESTADO.md) e [index.md](../index.md).
+> ⚠️ Este aviso foi atualizado em 2026-09-15. O texto anterior dizia que o backend
+> oficial continuava sendo o Grafana Cloud, o que deixou de valer: o
+> [ADR-006](../adr/ADR-006-opentelemetry-new-relic.md) foi aceito definindo
+> **OpenTelemetry com New Relic US**, e a W5 foi implantada assim — ver
+> [evidence/w5](../evidence/w5/README.md).
+>
+> O runbook segue util pelo diagnostico de license key que documenta, mas descreve o
+> agente APM via `-javaagent`, que **nao** e o caminho adotado. A W5 usa o agente
+> OpenTelemetry na aplicacao e o collector NRDOT no cluster, exportando OTLP. Para
+> operar a W5, use o [runbook de execucao](w5-execucao.md).
 
 ---
 

@@ -4,12 +4,16 @@ Levantamento baseado no codigo, nos workflows executados e no ambiente AWS Acade
 efetivamente usado pelo grupo. Quando o planejamento original diverge da execucao, o
 estado real registrado aqui prevalece.
 
-**Atualizado em:** 2026-09-13
+**Atualizado em:** 2026-09-15
 
 **Onda atual:** W5 — observabilidade operacional
 
 **Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 concluida e G4
-aprovado. A W3 mantem somente a coleta quantitativa de `EXPLAIN` como divida de evidencia.
+aprovado. A W5 esta implantada com telemetria real de cluster, aplicacao e Lambda
+na conta New Relic 8494284: **28 dos 31 widgets** dos seis dashboards tem dados,
+medidos apos exercitar os endpoints. Para fechar o G5 falta confirmar o ciclo do
+alerta — incidente aberto, notificacao entregue e recuperacao — e registrar as
+capturas sanitizadas. A W3 mantem a coleta quantitativa de `EXPLAIN` como divida.
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -24,7 +28,7 @@ aprovado. A W3 mantem somente a coleta quantitativa de `EXPLAIN` como divida de 
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
 | **W3 — dados + contrato** | **gate operacional concluido** | EKS, RDS, Flyway, duas replicas e readiness externo validados; `EXPLAIN` quantitativo pendente |
 | **W4-A / W4-B** | **concluida** | Lambda/CPF, JWT, Gateway, VPC Link e NLB interno validados no G4; ver [evidence/w4](evidence/w4/README.md) |
-| W5 — observabilidade | **em implementacao** | [contrato de sinais](observability/w5-observability-contract.md), dashboards, alertas e operacao a partir das evidencias da W4 |
+| W5 — observabilidade | **implantada; G5 parcial** | infraestrutura provisionada e telemetria fluindo; ver [evidence/w5](evidence/w5/README.md) e o [runbook de execucao](runbooks/w5-execucao.md) |
 | W6 — governanca | nao iniciada | depende do G5 |
 | W7 — entrega | nao iniciada | gravar antes de destruir a infraestrutura final |
 
@@ -106,14 +110,24 @@ Consequencias:
 
 ## Proximo passo recomendado
 
-Executar a W5 conforme o [contrato de observabilidade](observability/w5-observability-contract.md):
-consolidar observabilidade operacional no New Relic, publicar dashboards, definir alertas
-e registrar uma evidencia de alerta disparado. O G4 da W4 esta concluido;
-as evidencias de Lambda, JWT, Gateway, VPC Link, NLB interno e correlacao estao em
-[evidence/w4/README.md](evidence/w4/README.md).
+A infraestrutura da W5 esta no ar e a telemetria de cluster e aplicacao chega ao New
+Relic. O que falta para fechar o G5 esta detalhado em
+[evidence/w5/README.md](evidence/w5/README.md); em resumo:
 
-Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3 sem bloquear a W5.
+1. executar o [runbook da W5](runbooks/w5-execucao.md) para gerar as metricas
+   `workshop.*` e disparar o alerta controlado, o que alimenta os dois paineis de
+   ordem de servico;
+2. registrar as capturas e consultas NRQL sanitizadas;
+3. tratar o state remoto dos assets antes do proximo apply, porque cada execucao
+   sem state recria e duplica recursos.
 
-Antes de encerrar a janela AWS, remover workloads e Load Balancer, destruir o RDS e
-somente depois destruir o EKS/VPC. A evidencia detalhada da execucao esta em
-[evidence/w3/README.md](evidence/w3/README.md).
+O painel da Lambda esta completo. Traces da funcao permanecem indisponiveis por
+limitacao da camada, o que afeta apenas o criterio de correlacao — detalhado em
+[evidence/w5](evidence/w5/README.md).
+
+Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3.
+
+Antes de encerrar a janela AWS, destruir na ordem inversa: serverless, depois
+database (`DESTRUIR DATABASE ANTES DO CLUSTER`), depois EKS (`DESTRUIR-PROD`). O
+destroy do EKS ja falhou uma vez por ENIs de Lambda ainda anexadas, e o gate do
+repositorio bloqueia enquanto o `db_client_sg_id` estiver em uso.
