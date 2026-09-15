@@ -40,10 +40,21 @@ Atributos de recurso conferidos nos spans: `deployment.environment = 'prod'` e
 | 1 | Seis dashboards com dados reais | **28 de 31 widgets** — ver tabela abaixo |
 | 2 | Trace HTTP com span JDBC | **atendido** |
 | 3 | Mesmo `correlationId` na Lambda e na aplicacao | **parcial** — o identificador aparece nos logs das duas pontas, mas nao ha trace unico ligando-as, porque traces da Lambda nao chegam |
-| 4 | Incidente aberto por falha controlada | pendente — as tres transicoes invalidas foram executadas e devolveram 422; falta confirmar a abertura do incidente |
+| 4 | Incidente aberto por falha controlada | **condicao satisfeita**, aguardando avaliacao — ver abaixo |
 | 5 | Notificacao entregue | pendente |
 | 6 | Incidente recuperado | pendente |
 | 7 | Busca sem CPF, JWT, senha ou segredo | **parcial** — ver higiene |
+
+A falha controlada foi produzida com carga sustentada, nao com tres chamadas
+seguidas: a condicao usa `thresholdOccurrences: ALL` e exige tres ou mais em cada
+janela de um minuto dentro dos cinco. A serie registrada foi
+
+```
+0 0 0 0 0 4 4 4 4 4 0 0
+```
+
+ou seja, cinco janelas consecutivas acima do limiar, exatamente o que a condicao
+pede. O procedimento corrigido esta no [runbook](../../runbooks/w5-execucao.md).
 
 O fluxo foi exercitado contra o ambiente em 2026-09-15: autenticacao por CPF na
 Lambda devolvendo 200 com JWT para documento valido e 422 para invalido, com e sem
