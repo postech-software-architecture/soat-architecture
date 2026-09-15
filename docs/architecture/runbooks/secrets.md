@@ -15,13 +15,46 @@ infraestrutura continue ativa.
 | `AWS_SESSION_TOKEN` | — | sim | sim | sim | Academy → AWS Details (**temporario, ~4h**) |
 | `DB_PASSWORD` | — | — | sim | sim | escolhido pelo time; igual nos dois repos |
 | `JWT_SECRET` | sim | — | — | sim | **um unico valor**, novo e identico nos dois repos (32+ bytes) |
+| `NEW_RELIC_LICENSE_KEY` | sim | sim | — | sim | New Relic → API keys, tipo **INGEST - LICENSE** (40 chars, sufixo `NRAL`) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | — | sim | — | sim | New Relic US → `https://otlp.nr-data.net` |
 | `OTEL_EXPORTER_OTLP_HEADERS` | — | sim | — | sim | `api-key=<New Relic ingest license key>` |
 
+O repositorio `soat-architecture` tambem tem Environment `prod`, para os assets do
+New Relic e o state remoto: `NEW_RELIC_ACCOUNT_ID` (numerico, nao o UUID da
+organizacao), `NEW_RELIC_API_KEY` (tipo **User**, prefixo `NRAK-`),
+`NEW_RELIC_NOTIFICATION_URL` e os tres secrets AWS.
+
 Todos em **Environment** (`prod`), nao em repo — assim herdam o gate
-de aprovacao. Sao 17 entradas no total entre os 4 repos; `JWT_SECRET` conta duas vezes
-porque o mesmo valor deve existir nos Environments da aplicacao e do serverless. Ambiente unico
-`prod` nesta fase; `homolog` foi removido em 2026-09-08 (era espelho de `prod`).
+de aprovacao. Ambiente unico `prod` nesta fase; `homolog` foi removido em
+2026-09-08 (era espelho de `prod`).
+
+## Variables (nao sao secretas)
+
+| Variable | Onde | Valor |
+|---|---|---|
+| `TFSTATE_BUCKET` | kubernetes, database, serverless, architecture | nome do bucket de state |
+| `TFSTATE_LOCK_TABLE` | idem | nome da tabela DynamoDB de lock |
+| `AWS_REGION` | opcional | default `us-east-1`; o Terraform valida essa regiao |
+| `ADOT_LAYER_ARN` | serverless | ARN regional da layer ADOT Java |
+
+Desde 2026-09-15 o bucket e a tabela de state vem dessas variables, e nao mais
+fixos no codigo. Trocar de conta AWS e trocar esses dois valores por repositorio,
+mais o bootstrap do bucket na conta nova.
+
+## Tres chaves diferentes do New Relic
+
+A confusao entre elas ja custou tempo neste projeto e vale a distincao:
+
+| Chave | Formato | Para que serve |
+|---|---|---|
+| **INGEST - LICENSE** | 40 chars, termina em `NRAL` | enviar telemetria (`NEW_RELIC_LICENSE_KEY`) |
+| **User** | comeca com `NRAK-` | criar dashboards e alertas via API (`NEW_RELIC_API_KEY`) |
+| **INGEST - BROWSER** | outro formato | nao serve para nenhum dos dois |
+
+Uma chave de ingestao usada onde se espera a User key, ou o contrario, falha com
+403 ou 401 sem dizer qual das duas era esperada. O `Account ID` tambem tem
+armadilha: e **numerico** (ex. `8494284`); o UUID que aparece na mesma tela e
+outro identificador e nao funciona no Terraform.
 
 ## Duas travas contra apply acidental
 
