@@ -6,6 +6,6 @@
     {"title":"Processing errors by stage","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.ordem_servico.processing.error.count) FROM Metric FACET stage TIMESERIES"}]}},
     {"title":"Integration errors","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.integration.error.count) FROM Metric FACET integration TIMESERIES"}]}},
     {"title":"Error outcomes","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.pie"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.ordem_servico.processing.error.count) FROM Metric FACET outcome"}]}},
-    {"title":"Error rate","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT percentage(count(*), WHERE error IS true) FROM Transaction TIMESERIES"}]}}
+    {"title":"Error rate","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT percentage(count(*), WHERE numeric(http.response.status_code) >= 400) FROM Span WHERE service.name = 'workshop-service' AND span.kind = 'server' TIMESERIES SINCE 1 hour ago"}]}}
   ]}]
 }
