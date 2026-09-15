@@ -40,9 +40,9 @@ Atributos de recurso conferidos nos spans: `deployment.environment = 'prod'` e
 | 1 | Seis dashboards com dados reais | **28 de 31 widgets** — ver tabela abaixo |
 | 2 | Trace HTTP com span JDBC | **atendido** |
 | 3 | Mesmo `correlationId` na Lambda e na aplicacao | **parcial** — o identificador aparece nos logs das duas pontas, mas nao ha trace unico ligando-as, porque traces da Lambda nao chegam |
-| 4 | Incidente aberto por falha controlada | **condicao satisfeita**, aguardando avaliacao — ver abaixo |
-| 5 | Notificacao entregue | pendente |
-| 6 | Incidente recuperado | pendente |
+| 4 | Incidente aberto por falha controlada | **atendido** — incidente `ACTIVATED`, prioridade `CRITICAL`, aberto em 2026-09-15 19:13:19Z |
+| 5 | Notificacao entregue | workflow `W5 operational workflow` ativo com destino configurado; confirmar a chamada no destino |
+| 6 | Incidente recuperado | pendente — carga interrompida, aguardando a janela seguinte |
 | 7 | Busca sem CPF, JWT, senha ou segredo | **parcial** — ver higiene |
 
 A falha controlada foi produzida com carga sustentada, nao com tres chamadas
@@ -53,8 +53,18 @@ janela de um minuto dentro dos cinco. A serie registrada foi
 0 0 0 0 0 4 4 4 4 4 0 0
 ```
 
-ou seja, cinco janelas consecutivas acima do limiar, exatamente o que a condicao
-pede. O procedimento corrigido esta no [runbook](../../runbooks/w5-execucao.md).
+ou seja, sete janelas consecutivas acima do limiar, mais do que os cinco que a
+condicao pede. O incidente abriu as 19:13:19Z com o titulo
+
+```
+workshop-service query result is >= 3.0 for 5 minutes
+on 'W5 - three processing failures in five minutes'
+```
+
+O procedimento corrigido esta no [runbook](../../runbooks/w5-execucao.md). Vale
+notar o atraso: a condicao usa janela de 60s com `aggregationDelay` de 120s, entao
+a avaliacao so conclui alguns minutos depois de a carga terminar — conferir cedo
+demais leva a crer que o alerta nao disparou.
 
 O fluxo foi exercitado contra o ambiente em 2026-09-15: autenticacao por CPF na
 Lambda devolvendo 200 com JWT para documento valido e 422 para invalido, com e sem
