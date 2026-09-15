@@ -1,11 +1,17 @@
 {
   "name": "W5 - EKS Infrastructure",
-  "description": "EKS, Kubernetes and collector health signals.",
+  "description": "Cluster health from the NRDOT collector: nodes, pods and restarts.",
   "permissions": "PUBLIC_READ_ONLY",
-  "pages": [{"name":"Infrastructure","widgets":[
-    {"title":"Node CPU","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.node.cpuUsageNanoCores) FROM Metric FACET k8s.node.name TIMESERIES"}]}},
-    {"title":"Pod restarts","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(k8s.container.restarts) FROM Metric FACET k8s.pod.name TIMESERIES"}]}},
-    {"title":"Collector telemetry","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT count(*) FROM Log WHERE service.name = 'nr-k8s-otel-collector'"}]}},
-    {"title":"Workload availability","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.deployment.available) FROM Metric FACET k8s.deployment.name TIMESERIES"}]}}
-  ]}]
+  "pages": [{
+    "name": "Infrastructure",
+    "widgets": [
+      {"title":"Node CPU usage","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.node.cpu.usage) FROM Metric WHERE k8s.cluster.name = 'workshop-eks' FACET k8s.node.name TIMESERIES SINCE 1 hour ago"}]}},
+      {"title":"Node memory working set","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.node.memory.working_set) FROM Metric WHERE k8s.cluster.name = 'workshop-eks' FACET k8s.node.name TIMESERIES SINCE 1 hour ago"}]}},
+      {"title":"Pods in the workshop namespace","layout":{"column":1,"row":4,"width":3,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT uniqueCount(k8s.pod.name) FROM Metric WHERE k8s.namespace.name = 'workshop' SINCE 30 minutes ago"}]}},
+      {"title":"Pod CPU against its limit","layout":{"column":4,"row":4,"width":4,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.pod.cpu_limit_utilization) FROM Metric WHERE k8s.namespace.name = 'workshop' FACET k8s.pod.name TIMESERIES SINCE 1 hour ago"}]}},
+      {"title":"Pod memory against its limit","layout":{"column":8,"row":4,"width":5,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(k8s.pod.memory_limit_utilization) FROM Metric WHERE k8s.namespace.name = 'workshop' FACET k8s.pod.name TIMESERIES SINCE 1 hour ago"}]}},
+      {"title":"Pods by namespace","layout":{"column":1,"row":7,"width":6,"height":3},"visualization":{"id":"viz.table"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT uniqueCount(k8s.pod.name) AS 'pods' FROM Metric WHERE k8s.cluster.name = 'workshop-eks' FACET k8s.namespace.name SINCE 30 minutes ago"}]}},
+      {"title":"Node CPU percentage","layout":{"column":7,"row":7,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(node.cpu.usage.percentage) FROM Metric FACET k8s.node.name TIMESERIES SINCE 1 hour ago"}]}}
+    ]
+  }]
 }

@@ -5,7 +5,7 @@
   "pages": [{"name":"Lifecycle","widgets":[
     {"title":"Created orders","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.ordem_servico.created.count) FROM Metric FACET environment TIMESERIES"}]}},
     {"title":"Status duration","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT average(workshop.ordem_servico.status.duration) FROM Metric FACET status TIMESERIES"}]}},
-    {"title":"Orders by status","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.table"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT count(*) FROM Transaction FACET status"}]}},
+    {"title":"Orders by status","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.table"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT count(*) FROM Span WHERE service.name = 'workshop-service' AND span.kind = 'server' FACET http.response.status_code TIMESERIES SINCE 1 hour ago"}]}},
     {"title":"Processing failures","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.ordem_servico.processing.error.count) FROM Metric"}]}}
   ]}]
 }
