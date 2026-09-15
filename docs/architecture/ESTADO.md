@@ -9,10 +9,11 @@ estado real registrado aqui prevalece.
 **Onda atual:** W5 — observabilidade operacional
 
 **Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 concluida e G4
-aprovado. A W5 esta implantada e emitindo telemetria real: cluster, aplicacao,
-dashboards e alerta validados na conta New Relic 8494284. Faltam para o G5 as
-metricas de negocio `workshop.*`, que exigem exercitar o fluxo de ordem de servico,
-e os sinais da Lambda. A W3 mantem a coleta quantitativa de `EXPLAIN` como divida.
+aprovado. A W5 esta implantada com telemetria real de cluster, aplicacao e Lambda
+na conta New Relic 8494284: **28 dos 31 widgets** dos seis dashboards tem dados,
+medidos apos exercitar os endpoints. Para fechar o G5 falta confirmar o ciclo do
+alerta — incidente aberto, notificacao entregue e recuperacao — e registrar as
+capturas sanitizadas. A W3 mantem a coleta quantitativa de `EXPLAIN` como divida.
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -114,9 +115,15 @@ Relic. O que falta para fechar o G5 esta detalhado em
 [evidence/w5/README.md](evidence/w5/README.md); em resumo:
 
 1. executar o [runbook da W5](runbooks/w5-execucao.md) para gerar as metricas
-   `workshop.*` e disparar o alerta controlado;
-2. confirmar os sinais da Lambda apos a reciclagem das ENIs;
-3. registrar as capturas e consultas NRQL sanitizadas.
+   `workshop.*` e disparar o alerta controlado, o que alimenta os dois paineis de
+   ordem de servico;
+2. registrar as capturas e consultas NRQL sanitizadas;
+3. tratar o state remoto dos assets antes do proximo apply, porque cada execucao
+   sem state recria e duplica recursos.
+
+O painel da Lambda esta completo. Traces da funcao permanecem indisponiveis por
+limitacao da camada, o que afeta apenas o criterio de correlacao — detalhado em
+[evidence/w5](evidence/w5/README.md).
 
 Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3.
 
