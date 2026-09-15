@@ -5,7 +5,7 @@
   "pages": [{"name":"Auth","widgets":[
     {"title":"CPF attempts","layout":{"column":1,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.auth.cpf.attempt.count) FROM Metric TIMESERIES"}]}},
     {"title":"CPF failures","layout":{"column":7,"row":1,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.auth.cpf.failure.count) FROM Metric FACET outcome TIMESERIES"}]}},
-    {"title":"Lambda duration","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT percentile(duration.ms, 95) FROM Span WHERE service.name = 'workshop-auth-serverless' TIMESERIES"}]}},
-    {"title":"Lambda errors","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT count(*) FROM Span WHERE service.name = 'workshop-auth-serverless' AND error.type IS NOT NULL"}]}}
+    {"title":"Handler duration (p50/p95/p99)","layout":{"column":1,"row":4,"width":6,"height":3},"visualization":{"id":"viz.line"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT percentile(workshop.auth.cpf.duration, 50, 95, 99) FROM Metric TIMESERIES SINCE 1 hour ago"}]}},
+    {"title":"Failures by kind","layout":{"column":7,"row":4,"width":6,"height":3},"visualization":{"id":"viz.billboard"},"rawConfiguration":{"nrqlQueries":[{"accountId":${account_id},"query":"SELECT sum(workshop.auth.cpf.failure.count) AS 'auth failures', sum(workshop.auth.database.error.count) AS 'database errors' FROM Metric SINCE 1 hour ago"}]}}
   ]}]
 }
