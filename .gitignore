@@ -3,3 +3,23 @@
 ~$*
 .env
 .env.local
+
+# Configuracao local de IDE
+.idea/
+
+# Estado e cache do Terraform dos assets New Relic. O repo e publico: state pode
+# conter identificadores de conta e valores de variaveis sensiveis.
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+
+# Plano salvo: e um snapshot binario do state e da config, com os mesmos valores
+# sensiveis do state.
+tfplan
+*.tfplan
+
+# tfvars reais; apenas o .example vai ao git
+*.tfvars
+!*.tfvars.example
