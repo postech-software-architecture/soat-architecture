@@ -63,7 +63,7 @@ resource "newrelic_notification_channel" "w5" {
 
   property {
     key           = "payload"
-    value         = "{\"id\":\"{{issue.id}}\",\"title\":\"{{issue.title}}\"}"
+    value         = trimspace(var.notification_payload)
     display_value = "sanitized issue payload"
   }
 }

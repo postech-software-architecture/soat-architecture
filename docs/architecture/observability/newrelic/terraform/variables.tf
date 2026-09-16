@@ -40,6 +40,34 @@ variable "notification_destination_url" {
   default     = ""
 }
 
+variable "notification_payload" {
+  description = <<-EOT
+    Corpo enviado ao destino da notificacao. O default segue o contrato do Discord,
+    que exige um objeto com a chave "content"; destinos com contrato proprio exigem
+    o formato deles, senao respondem 400 e a notificacao falha em silencio: o
+    incidente abre no New Relic e nada chega ao canal.
+
+    As chaves duplas sao Handlebars, avaliadas pelo New Relic — nao por Terraform,
+    que so interpola $${...}. Os nomes NAO usam ponto: `issue.id` e `issue.title`
+    nao existem e o New Relic renderiza "N/A" no lugar. Os corretos sao:
+
+      {{issueId}}                 identificador do incidente
+      {{annotations.title.[0]}}   titulo; e lista, o `.[0]` e obrigatorio
+      {{issuePageUrl}}            link para o incidente
+      {{state}}                   CREATED, ACTIVATED ou CLOSED
+      {{priority}}                severidade
+
+    `{{escape ...}}` protege valores com aspas, que senao quebram o JSON.
+
+    Mantenha apenas id, titulo, estado e link; o contrato de observabilidade
+    proibe CPF, JWT, segredo e identificador de ordem de servico em notificacao.
+  EOT
+  type        = string
+  default     = <<-EOT
+    {"content": "🚨 Incidente {{issueId}} [{{state}}]: {{escape annotations.title.[0]}} — {{issuePageUrl}}"}
+  EOT
+}
+
 variable "synthetic_enabled" {
   description = "Creates the synthetic monitor when true. Disabled by default until a real URL is approved."
   type        = bool
