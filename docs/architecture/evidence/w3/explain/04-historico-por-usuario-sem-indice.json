@@ -1,0 +1,130 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Gather Merge",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 21435.99,
+      "Total Cost": 21813.78,
+      "Plan Rows": 3238,
+      "Plan Width": 52,
+      "Actual Startup Time": 41.651,
+      "Actual Total Time": 43.766,
+      "Actual Rows": 3903,
+      "Actual Loops": 1,
+      "Workers Planned": 2,
+      "Workers Launched": 2,
+      "Shared Hit Blocks": 9155,
+      "Shared Read Blocks": 7100,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "WAL Records": 0,
+      "WAL FPI": 0,
+      "WAL Bytes": 0,
+      "Plans": [
+        {
+          "Node Type": "Sort",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 20435.97,
+          "Total Cost": 20440.01,
+          "Plan Rows": 1619,
+          "Plan Width": 52,
+          "Actual Startup Time": 40.434,
+          "Actual Total Time": 40.481,
+          "Actual Rows": 1301,
+          "Actual Loops": 3,
+          "Sort Key": ["data_transicao DESC"],
+          "Sort Method": "quicksort",
+          "Sort Space Used": 183,
+          "Sort Space Type": "Memory",
+          "Shared Hit Blocks": 9155,
+          "Shared Read Blocks": 7100,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "WAL Records": 0,
+          "WAL FPI": 0,
+          "WAL Bytes": 0,
+          "Workers": [
+            {
+              "Worker Number": 0,
+              "Sort Method": "quicksort",
+              "Sort Space Used": 159,
+              "Sort Space Type": "Memory"
+            },
+            {
+              "Worker Number": 1,
+              "Sort Method": "quicksort",
+              "Sort Space Used": 169,
+              "Sort Space Type": "Memory"
+            }
+          ],
+          "Plans": [
+            {
+              "Node Type": "Seq Scan",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": true,
+              "Async Capable": false,
+              "Relation Name": "historico_status_os",
+              "Alias": "historico_status_os",
+              "Startup Cost": 0.00,
+              "Total Cost": 20349.67,
+              "Plan Rows": 1619,
+              "Plan Width": 52,
+              "Actual Startup Time": 0.838,
+              "Actual Total Time": 40.209,
+              "Actual Rows": 1301,
+              "Actual Loops": 3,
+              "Filter": "(usuario_id = '0803e09e-e8c7-47a1-b112-1ac3845b6e5c'::uuid)",
+              "Rows Removed by Filter": 265366,
+              "Shared Hit Blocks": 9083,
+              "Shared Read Blocks": 7100,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 0,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "WAL Records": 0,
+              "WAL FPI": 0,
+              "WAL Bytes": 0,
+              "Workers": [
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 98,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.238,
+    "Triggers": [
+    ],
+    "Execution Time": 43.926
+  }
+]

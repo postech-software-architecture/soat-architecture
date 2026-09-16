@@ -40,7 +40,9 @@ Indice central da documentacao arquitetural dos quatro repositorios da entrega.
 | [G1](evidence/g1/README.md) | Branch protection, Environments e secret scanning |
 | [W0/W2](evidence/w0-w2/README.md) | Spikes, EKS, aplicacao instrumentada e destroy |
 | [W3](evidence/w3/README.md) | Integridade, runs de EKS/RDS, deploy, Flyway e readiness publico |
+| [W3 — `EXPLAIN`](evidence/w3/explain/README.md) | Planos medidos, massa declarada e veredicto dos indices |
 | [W4](evidence/w4/README.md) | Lambda CPF, JWT, Gateway, VPC Link, NLB interno e G4 |
+| [W5](evidence/w5/README.md) | Dashboards, trace com span JDBC, ciclo do alerta e pendencias do G5 |
 | [Contrato W5](observability/w5-observability-contract.md) | Sinais, métricas, dashboards, alerta e G5 no New Relic |
 | [Secrets](runbooks/secrets.md) | Inventario, renovacao e rotacao |
 | [Modelo de dados](data/modelo-de-dados.md) | ER, relacionamentos, politica de remocao e revisao de indices (W3) |

@@ -4,10 +4,15 @@
 
 A revisao estrutural abaixo foi feita sobre as migrations e consultas da aplicacao. Na
 janela AWS de 2026-09-13, o RDS foi criado, a aplicacao concluiu o startup/Flyway e duas
-replicas ficaram `Ready`, mas os resultados numericos de
-`EXPLAIN (ANALYZE, BUFFERS)` **ainda nao foram coletados**. Falta carregar e declarar
-uma massa representativa. Nenhum tempo, custo ou quantidade de buffers e apresentado
-como resultado real nesta versao.
+replicas ficaram `Ready`, mas os resultados numericos de `EXPLAIN (ANALYZE, BUFFERS)` nao
+tinham sido coletados.
+
+**Divida encerrada em 2026-09-14.** Os planos foram medidos em base descartavel local
+(PostgreSQL 15.18, 20 de 20 migrations, massa declarada de 200.000 ordens / 600.000 itens /
+800.000 transicoes) e estao em
+[`evidence/w3/explain/`](../evidence/w3/explain/README.md), com os sete JSONs e o script
+de massa. A medicao nao foi feita no RDS porque a comparacao exige `DROP INDEX`, proibido
+na instancia ativa pela secao "Checkpoint reproduzivel" deste documento.
 
 ## Indices da W3
 
@@ -143,14 +148,23 @@ Depois dos `ROLLBACK`, executar novamente os planos com os indices presentes. Gu
 quatro JSONs em `evidence/w3/explain/`, registrando versao do PostgreSQL, quantidade de
 linhas por tabela e se o cache estava aquecido.
 
-## Template de resultado pendente
+## Resultado medido
+
+Coleta de 2026-09-14. Planos completos e ressalvas em
+[`evidence/w3/explain/`](../evidence/w3/explain/README.md).
 
 | Consulta | Linhas da tabela | Plano sem indice | Plano com indice | Tempo antes/depois | Buffers antes/depois | Veredicto |
 |---|---:|---|---|---|---|---|
-| itens por `peca_insumo_id` | pendente | pendente | pendente | pendente | pendente | checkpoint W3 |
-| historico por `usuario_id` | pendente | pendente | pendente | pendente | pendente | checkpoint W3 |
-| volume diario | pendente | pendente | pendente | pendente | pendente | decidir indice candidato |
-| tempo por etapa | pendente | pendente | pendente | pendente | pendente | validar indice existente |
+| itens por `peca_insumo_id` | 600.000 | `Parallel Seq Scan` | `Bitmap Index Scan [ix_ordens_servico_itens_peca_insumo]` | 24,028 ms → 0,253 ms | 8.805 → 243 blocos | indice novo justificado |
+| historico por `usuario_id` | 800.000 | `Parallel Seq Scan` + `Sort` | `Index Scan [ix_historico_status_os_usuario]` | 43,926 ms → 1,106 ms | 16.255 → 89 blocos | indice novo justificado |
+| volume diario | 200.000 | `Seq Scan` com filtro | `Index Only Scan` no indice parcial candidato | 25,510 ms → 5,269 ms | 3.514 → 37 blocos | **criar** o indice candidato |
+| tempo por etapa | 800.000 | n/a | `Index Scan [ix_historico_status_os_ordem_data]` → `WindowAgg` | 791,848 ms | 804.570 blocos | indice existente validado |
+
+O indice parcial `(data_criacao, status) WHERE data_remocao IS NULL`, ate aqui hipotese,
+passa a ser recomendacao: mesmo devolvendo 15,6% da tabela — faixa em que sequential scan
+costuma vencer — ele habilita `Index Only Scan` e corta blocos em 95x. A consulta de tempo
+por etapa nao tem problema de plano; seu custo vem de varrer todas as transicoes sem
+recorte temporal, e a acao correspondente pertence ao painel 5 da W5, nao a W3.
 
 ## Riscos de volume e cardinalidade
 
