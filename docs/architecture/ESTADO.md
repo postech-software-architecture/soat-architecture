@@ -8,16 +8,16 @@ estado real registrado aqui prevalece.
 
 **Onda atual:** W5 — observabilidade operacional
 
-**Situacao:** W0–W2 concluidas; gate operacional da W3 executado; W4 concluida e G4
-aprovado. A W5 esta implantada com telemetria real de cluster, aplicacao e Lambda
-na conta New Relic 8494284: **28 dos 31 widgets** dos seis dashboards tem dados,
-medidos apos exercitar os endpoints. O ciclo do alerta foi exercitado de ponta a
-ponta: incidente aberto as 19:13:19Z por cinco janelas consecutivas acima do
-limiar e fechado as 19:20:19Z depois que a carga parou. A varredura de dados
-sensiveis em `prod` nao encontrou CPF, documento, JWT nem senha. Para fechar o G5
-faltam as capturas sanitizadas e o trace unico entre Lambda e aplicacao,
-indisponivel por limitacao da camada. A W3 mantem a coleta quantitativa de
-`EXPLAIN` como divida.
+**Situacao:** W0–W2 concluidas; W3 encerrada, incluindo a coleta quantitativa de
+`EXPLAIN`; W4 concluida e G4 aprovado. A W5 esta implantada com telemetria real de
+cluster, aplicacao e Lambda na conta New Relic 8494284: **28 dos 31 widgets** dos
+seis dashboards tem dados, medidos apos exercitar os endpoints. O ciclo do alerta
+foi exercitado de ponta a ponta: incidente aberto as 19:13:19Z por cinco janelas
+consecutivas acima do limiar e fechado as 19:20:19Z depois que a carga parou. A
+varredura de dados sensiveis em `prod` nao encontrou CPF, documento, JWT nem
+senha. Para fechar o G5 faltam as capturas sanitizadas e o trace unico entre
+Lambda e aplicacao, indisponivel por limitacao da camada. Nenhuma divida de
+evidencia anterior a W5 permanece aberta.
 
 **Ambiente:** `prod` unico; credenciais temporarias do AWS Academy sao renovadas por janela.
 
@@ -30,7 +30,7 @@ indisponivel por limitacao da camada. A W3 mantem a coleta quantitativa de
 | **W0 — spikes de risco** | **concluida** | LabRole, VPC Link/NLB, OTLP/New Relic e backend remoto aprovados |
 | **W1 — fundacao** | **concluida** | 4 repositorios, protecoes, CI minima, contrato de outputs, RFCs e ADRs publicados |
 | **W2 — cloud + higiene** | **concluida** | EKS/Kustomize validados; logs JSON/OTLP e correlacao integrados; CI verde; destroy comprovado |
-| **W3 — dados + contrato** | **gate operacional concluido** | EKS, RDS, Flyway, duas replicas e readiness externo validados; `EXPLAIN` quantitativo pendente |
+| **W3 — dados + contrato** | **concluida** | EKS, RDS, Flyway, duas replicas e readiness externo validados; `EXPLAIN` medido em [evidence/w3/explain](evidence/w3/explain/README.md) |
 | **W4-A / W4-B** | **concluida** | Lambda/CPF, JWT, Gateway, VPC Link e NLB interno validados no G4; ver [evidence/w4](evidence/w4/README.md) |
 | W5 — observabilidade | **implantada; G5 parcial** | infraestrutura provisionada e telemetria fluindo; ver [evidence/w5](evidence/w5/README.md) e o [runbook de execucao](runbooks/w5-execucao.md) |
 | W6 — governanca | nao iniciada | depende do G5 |
@@ -130,7 +130,10 @@ O painel da Lambda esta completo. Traces da funcao permanecem indisponiveis por
 limitacao da camada, o que afeta apenas o criterio de correlacao — detalhado em
 [evidence/w5](evidence/w5/README.md).
 
-Em paralelo, coletar o `EXPLAIN (ANALYZE, BUFFERS)` pendente da W3.
+A divida de `EXPLAIN (ANALYZE, BUFFERS)` da W3 foi encerrada em 2026-09-14; ver
+[evidence/w3/explain](evidence/w3/explain/README.md). Dela sai uma acao para o backlog:
+criar o indice parcial `ordens_servico (data_criacao, status) WHERE data_remocao IS NULL`,
+que a medicao promoveu de candidato a recomendacao.
 
 Antes de encerrar a janela AWS, destruir na ordem inversa: serverless, depois
 database (`DESTRUIR DATABASE ANTES DO CLUSTER`), depois EKS (`DESTRUIR-PROD`). O
