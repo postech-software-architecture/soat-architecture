@@ -6,10 +6,10 @@ Já temos testes e verificações locais, mas ainda falta rodar o fluxo integrad
 
 Queria que revisassem principalmente as responsabilidades dos serviços, contratos/eventos, estoque e valores, pagamentos/compensações, autorização e o corte/rollback no Academy. O resumo detalhado e o checklist indicam o que conferir em cada repo.
 
-Vou reunir os links dos seis Draft PRs abaixo assim que forem abertos:
-- OS: [preencher]
-- Billing: [preencher]
-- Execução: [preencher]
-- Plataforma: [preencher]
-- Auth existente: [preencher]
-- Arquitetura existente: [preencher]
+Links dos seis PRs:
+- OS: https://github.com/postech-software-architecture/workshop-os-service/pull/1
+- Billing: https://github.com/postech-software-architecture/workshop-billing-service/pull/1
+- Execução: https://github.com/postech-software-architecture/workshop-execution-service/pull/1
+- Plataforma: https://github.com/postech-software-architecture/workshop-infra-platform/pull/1
+- Auth existente: https://github.com/postech-software-architecture/workshop-auth-serverless/pull/34
+- Arquitetura existente: https://github.com/postech-software-architecture/soat-architecture/pull/24

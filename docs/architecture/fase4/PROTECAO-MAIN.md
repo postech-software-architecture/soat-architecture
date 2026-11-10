@@ -1,6 +1,6 @@
 # Proteção da main nos novos repositórios
 
-Solicitação incorporada: os quatro repos novos devem impedir commits diretos na main após o bootstrap mínimo. A proteção ainda não foi configurada remotamente porque os repos não foram criados.
+Solicitação incorporada: os quatro repos novos devem impedir commits diretos na main após o bootstrap mínimo. Conferido em 10/11/2026: os quatro repos novos têm a main protegida por ruleset com PR obrigatório, aprovações invalidadas a cada push, check `verify` obrigatório com branch atualizada, e bloqueio de force push e de exclusão.
 
 ## Situação conferida nos existentes
 

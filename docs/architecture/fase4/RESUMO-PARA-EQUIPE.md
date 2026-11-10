@@ -1,6 +1,6 @@
 # Fase 4 — o que foi implementado e o que revisar
 
-Atualizado em 09/11/2026, após as correções técnicas para o AWS Academy. Este documento substitui o resumo que apresentava essas correções como lacunas de desenvolvimento abertas. O material está preparado localmente; repositórios novos e PRs ainda não foram criados nesta preparação.
+Atualizado em 09/11/2026, após as correções técnicas para o AWS Academy. Este documento substitui o resumo que apresentava essas correções como lacunas de desenvolvimento abertas. Os repositórios novos e os seis PRs foram publicados (links em [MENSAGEM-PARA-EQUIPE.md](MENSAGEM-PARA-EQUIPE.md)). Em 10/11/2026 a integração foi verificada localmente (Compose e overlays Academy num k3s local): BDD completo até ENTREGUE e compensações de estorno, recusa, expiração e cancelamento até COMPENSADA, com o Mercado Pago substituído pelo mock da Orders API da plataforma. Conta de teste Mercado Pago, SMTP e cloud ainda precisam de evidências reais.
 
 ## Organização da mudança
 
