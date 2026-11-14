@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-09",
+  "remote_changes": false,
+  "repositories": [
+    {
+      "repository": "workshop-service-fase1",
+      "branch": "main",
+      "protected": false,
+      "required_status_checks_summary": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      },
+      "rulesets": [
+        {
+          "name": "block-main",
+          "enforcement": "disabled",
+          "id": 15753438
+        }
+      ],
+      "full_protection_read": "403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION"
+    },
+    {
+      "repository": "workshop-auth-serverless",
+      "branch": "main",
+      "protected": true,
+      "required_status_checks_summary": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      },
+      "rulesets": [],
+      "full_protection_read": "403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION"
+    },
+    {
+      "repository": "workshop-infra-kubernetes",
+      "branch": "main",
+      "protected": true,
+      "required_status_checks_summary": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      },
+      "rulesets": [],
+      "full_protection_read": "403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION"
+    },
+    {
+      "repository": "workshop-infra-database",
+      "branch": "main",
+      "protected": true,
+      "required_status_checks_summary": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      },
+      "rulesets": [],
+      "full_protection_read": "403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION"
+    },
+    {
+      "repository": "soat-architecture",
+      "branch": "main",
+      "protected": true,
+      "required_status_checks_summary": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      },
+      "rulesets": [],
+      "full_protection_read": "403_RESOURCE_NOT_ACCESSIBLE_BY_INTEGRATION"
+    }
+  ]
+}

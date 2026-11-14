@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-09",
+  "new_local_tests": 22,
+  "billing_tests_rerun": 102,
+  "billing_quality_verify": "PASS",
+  "legacy_terraform_resource_addresses_preserved": 14,
+  "terraform_validate": "PASS_LOCAL_ONLY",
+  "kustomize": "PASS_LOCAL_RENDER",
+  "workflow_syntax": "PASS_LOCAL_BASH_PYTHON_AND_YAML",
+  "pdf_participants": "PASS_TEST_RENDER_AND_FINAL_GUARD",
+  "candidate_alias_promotion": "EXPLICIT_VERSION_REQUIRED",
+  "new_iam_role_created": false,
+  "aws_apply": false,
+  "real_mercado_pago_proof": "NOT_RUN",
+  "docker_started": false,
+  "changes": {
+    "academy_workflows": "TEMPORARY_SESSION_AND_PROD",
+    "edge": "ADDITIVE_NLB_AND_EXPLICIT_GATEWAY_ROUTES",
+    "sql": "ISOLATED_DATABASES_ON_EXISTING_RDS",
+    "compose": "OPTIONAL_MP_SMTP_AND_EXCLUSIVE_AUTH_TOKEN",
+    "compensation": "INDEPENDENT_PROVIDER_AND_STOCK_PROOF",
+    "report": "PARTICIPANTS_AND_COMPLETE_BDD_REQUIRED"
+  },
+  "export_platform_tests_rerun": 14,
+  "export_tests_are_repeated_cases": true,
+  "export_static": {
+    "workflows": 11,
+    "scripts": 60,
+    "objects": {
+      "workshop-os-service": 6,
+      "workshop-billing-service": 6,
+      "workshop-execution-service": 6,
+      "workshop-infra-platform": 21
+    },
+    "status": "PASS"
+  }
+}
