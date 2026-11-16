@@ -1,0 +1,15 @@
+{
+  "workflowRunId": "43780849850",
+  "acceptanceCommit": "3e7b8d4faa0a86a7d5ad24cb0db36b51c9bdc8b6",
+  "images": {
+    "billing-service": [
+      "ghcr.io/postech-software-architecture/workshop-billing-service:b34c55057797de8b5f8a64e63c69074494bf4c64"
+    ],
+    "execucao-service": [
+      "ghcr.io/postech-software-architecture/workshop-execution-service:1ca986446bf684a243e444ad20dfccb7a2cd9e0d"
+    ],
+    "os-service": [
+      "ghcr.io/postech-software-architecture/workshop-os-service:b950ca97ca4e6d0800054f27cbb9af792f26d390"
+    ]
+  }
+}

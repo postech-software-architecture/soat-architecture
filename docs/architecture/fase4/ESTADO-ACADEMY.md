@@ -1,3 +1,5 @@
+> **Registro histórico, superado pela validação de 15/11/2026.** O estado atual e as evidências reais estão no [dossiê](README.md), [conferência final](CONFERENCIA-FINAL.md) e [aceite](ACEITE-E-ENTREGA.md). Mercado Pago, cloud e BDD completo já foram exercitados; vídeo/PDF ficaram para o solicitante. As pendências e instruções abaixo descrevem a época deste registro.
+
 # Correção das lacunas técnicas — AWS Academy
 
 Concluído localmente em 09/11/2026. Este documento sucede as auditorias e o pacote de publicação anteriores; não é prova de implantação.

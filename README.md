@@ -1,3 +1,20 @@
+# soat-architecture — documentação SOAT
+
+**Entrega vigente: [Fase 4 — arquitetura, resultados e evidências](docs/architecture/fase4/README.md).**
+
+Os três microserviços da Fase 4 estão implantados no Academy e tiveram pagamento de teste, entrega, compensação/estorno e BDD completo exercitados. Cobertura e CI/CD das imagens foram conferidos; documentação consolidada em 15/11/2026. Vídeo e PDF permanecem para o solicitante.
+
+- [Arquitetura final e diagrama](docs/architecture/fase4/ARQUITETURA-E-SAGA.md)
+- [Cobertura, CI/CD e proteções](docs/architecture/fase4/CONFERENCIA-FINAL.md)
+- [BDD integrado real](docs/architecture/fase4/BDD.md)
+- [Observabilidade e limites](docs/architecture/fase4/OBSERVABILIDADE.md)
+- [Aceite e itens de entrega](docs/architecture/fase4/ACEITE-E-ENTREGA.md)
+- [Retomada amanhã](docs/architecture/fase4/RETOMADA.md)
+
+As seções seguintes preservam a documentação histórica da Fase 3. Seus estados e conta New Relic antigos não substituem a revisão atual da Fase 4. Workflows de assets New Relic e PR #16 permanecem em trilha operacional própria, sem apply nesta consolidação.
+
+---
+
 # soat-architecture
 
 > Repositorio de **arquitetura e governanca** da **Fase 3** do Tech Challenge (SOAT).

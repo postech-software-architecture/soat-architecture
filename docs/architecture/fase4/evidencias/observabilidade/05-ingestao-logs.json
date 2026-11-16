@@ -1,0 +1,19 @@
+{
+  "evidenceSource": "New Relic query response supplied by user",
+  "accountId": 8494357,
+  "query": "SELECT count(*) FROM Log FACET service.name SINCE 60 minutes ago LIMIT 10",
+  "windowBeginUtc": "2026-11-15T23:07:45Z",
+  "windowEndUtc": "2026-11-16T00:07:45Z",
+  "logsByService": {
+    "billing-service": 173,
+    "os-service": 121,
+    "execucao-service": 68,
+    "workshop-auth-serverless": 13
+  },
+  "unknownGroupCount": 15996,
+  "totalLogCount": 16371,
+  "microserviceLogIngestionVerified": true,
+  "authLogIngestionVerified": true,
+  "traceLogCorrelationVerified": false,
+  "unknownGroupInterpretation": "Logs not grouped under a service.name value; origin and severity not established by this count."
+}

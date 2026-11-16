@@ -1,0 +1,18 @@
+{
+  "evidenceSource": "New Relic query response supplied by user",
+  "accountId": 8494357,
+  "traceId": "453f2c1e17da4d6c87b0108efbdee0b3",
+  "query": "SELECT count(*) FROM Span WHERE trace.id = '453f2c1e17da4d6c87b0108efbdee0b3' FACET service.name SINCE 24 hours ago LIMIT 3",
+  "windowBeginUtc": "2026-11-14T23:59:08Z",
+  "windowEndUtc": "2026-11-15T23:59:08Z",
+  "spansByService": {
+    "os-service": 431,
+    "billing-service": 84,
+    "execucao-service": 80
+  },
+  "totalSpans": 595,
+  "sameTraceIdObservedInThreeServices": true,
+  "messagingParentChildOrLinksVerified": false,
+  "waterfallCaptured": false,
+  "qualification": "Client reused the trace context across collection requests; service counts alone do not establish causal links across RabbitMQ."
+}

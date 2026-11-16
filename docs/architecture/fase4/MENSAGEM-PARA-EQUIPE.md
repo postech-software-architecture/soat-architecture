@@ -1,3 +1,5 @@
+> **Registro histórico, superado pela validação de 15/11/2026.** O estado atual e as evidências reais estão no [dossiê](README.md), [conferência final](CONFERENCIA-FINAL.md) e [aceite](ACEITE-E-ENTREGA.md). Mercado Pago, cloud e BDD completo já foram exercitados; vídeo/PDF ficaram para o solicitante. As pendências e instruções abaixo descrevem a época deste registro.
+
 Pessoal, preparei a implementação da Fase 4 para revisão. O material está separado em OS, Billing e Execução, mais uma plataforma de apoio. A autenticação e a documentação entram por PR nos repos existentes.
 
 As lacunas técnicas levantadas foram corrigidas no código/configuração para o AWS Academy: credenciais temporárias e LabRole, borda com corte explícito, bancos e usuários separados no RDS existente, configuração Mercado Pago/SMTP, verificação de compensação e gerador do PDF com participantes. A Lambda publica uma candidata sem substituir prod automaticamente.

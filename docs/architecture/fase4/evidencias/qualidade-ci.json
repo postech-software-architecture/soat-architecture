@@ -1,0 +1,185 @@
+[
+  {
+    "repository": "workshop-os-service",
+    "deployedCommit": "b950ca97ca4e6d0800054f27cbb9af792f26d390",
+    "checkedAtUtc": "2026-11-16T00:53:26.328690+00:00",
+    "ciRunId": 43743930446,
+    "ciUrl": "https://github.com/postech-software-architecture/workshop-os-service/actions/runs/43743930446",
+    "deployRunId": 43744057933,
+    "deployUrl": "https://github.com/postech-software-architecture/workshop-os-service/actions/runs/43744057933",
+    "junit": {
+      "tests": 387,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "coveragePercent": {
+      "INSTRUCTION": 81.3352,
+      "BRANCH": 72.7829,
+      "LINE": 83.3052,
+      "COMPLEXITY": 72.7977,
+      "METHOD": 83.6218,
+      "CLASS": 95.5128
+    },
+    "jacocoCounters": {
+      "INSTRUCTION": {
+        "covered": 13596,
+        "missed": 3120
+      },
+      "BRANCH": {
+        "covered": 952,
+        "missed": 356
+      },
+      "LINE": {
+        "covered": 2959,
+        "missed": 593
+      },
+      "COMPLEXITY": {
+        "covered": 1033,
+        "missed": 386
+      },
+      "METHOD": {
+        "covered": 628,
+        "missed": 123
+      },
+      "CLASS": {
+        "covered": 149,
+        "missed": 7
+      }
+    },
+    "minimumCoverageMetric": "LINE",
+    "minimumCoveragePercent": 80,
+    "coverageGatePassed": true,
+    "spotbugsHighPriorityFindings": 0,
+    "spotbugsTotalFindingsInReport": 0,
+    "jacocoExclusions": [
+      "com/postech/workshop_service/api/dtos/**",
+      "com/postech/workshop_service/infrastructure/persistence/entities/**",
+      "com/postech/workshop_service/infrastructure/persistence/mappers/*MapperImpl*"
+    ],
+    "jacocoXmlSha256": "98cfe20bf0013c60233e2b7a276777f4f8887a29e979a36b9504d541b3d7de8b",
+    "scope": "Maven test suite includes unit/context/BDD tests; the cross-service real BDD is separate. SpotBugs is the static quality tool executed in CI."
+  },
+  {
+    "repository": "workshop-billing-service",
+    "deployedCommit": "b34c55057797de8b5f8a64e63c69074494bf4c64",
+    "checkedAtUtc": "2026-11-16T00:53:26.342690+00:00",
+    "ciRunId": 43773150621,
+    "ciUrl": "https://github.com/postech-software-architecture/workshop-billing-service/actions/runs/43773150621",
+    "deployRunId": 43774200032,
+    "deployUrl": "https://github.com/postech-software-architecture/workshop-billing-service/actions/runs/43774200032",
+    "junit": {
+      "tests": 111,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "coveragePercent": {
+      "INSTRUCTION": 88.0524,
+      "BRANCH": 69.9174,
+      "LINE": 85.4283,
+      "COMPLEXITY": 59.5937,
+      "METHOD": 91.6031,
+      "CLASS": 100.0
+    },
+    "jacocoCounters": {
+      "INSTRUCTION": {
+        "covered": 4842,
+        "missed": 657
+      },
+      "BRANCH": {
+        "covered": 423,
+        "missed": 182
+      },
+      "LINE": {
+        "covered": 768,
+        "missed": 131
+      },
+      "COMPLEXITY": {
+        "covered": 264,
+        "missed": 179
+      },
+      "METHOD": {
+        "covered": 120,
+        "missed": 11
+      },
+      "CLASS": {
+        "covered": 33,
+        "missed": 0
+      }
+    },
+    "minimumCoverageMetric": "LINE",
+    "minimumCoveragePercent": 80,
+    "coverageGatePassed": true,
+    "spotbugsHighPriorityFindings": 0,
+    "spotbugsTotalFindingsInReport": 0,
+    "jacocoExclusions": [
+      "com/postech/workshop_service/api/dtos/**",
+      "com/postech/workshop_service/infrastructure/persistence/entities/**",
+      "com/postech/workshop_service/infrastructure/persistence/mappers/*MapperImpl*"
+    ],
+    "jacocoXmlSha256": "38aee463a4091fd5cc70d70adbea52a3a777ee0031a1259b9199645ce74309d8",
+    "scope": "Maven test suite includes unit/context/BDD tests; the cross-service real BDD is separate. SpotBugs is the static quality tool executed in CI."
+  },
+  {
+    "repository": "workshop-execution-service",
+    "deployedCommit": "1ca986446bf684a243e444ad20dfccb7a2cd9e0d",
+    "checkedAtUtc": "2026-11-16T00:53:26.350690+00:00",
+    "ciRunId": 43652212164,
+    "ciUrl": "https://github.com/postech-software-architecture/workshop-execution-service/actions/runs/43652212164",
+    "deployRunId": 43653172074,
+    "deployUrl": "https://github.com/postech-software-architecture/workshop-execution-service/actions/runs/43653172074",
+    "junit": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "coveragePercent": {
+      "INSTRUCTION": 90.6522,
+      "BRANCH": 77.4566,
+      "LINE": 86.9485,
+      "COMPLEXITY": 70.2509,
+      "METHOD": 87.7551,
+      "CLASS": 100.0
+    },
+    "jacocoCounters": {
+      "INSTRUCTION": {
+        "covered": 2919,
+        "missed": 301
+      },
+      "BRANCH": {
+        "covered": 268,
+        "missed": 78
+      },
+      "LINE": {
+        "covered": 473,
+        "missed": 71
+      },
+      "COMPLEXITY": {
+        "covered": 196,
+        "missed": 83
+      },
+      "METHOD": {
+        "covered": 86,
+        "missed": 12
+      },
+      "CLASS": {
+        "covered": 22,
+        "missed": 0
+      }
+    },
+    "minimumCoverageMetric": "LINE",
+    "minimumCoveragePercent": 80,
+    "coverageGatePassed": true,
+    "spotbugsHighPriorityFindings": 0,
+    "spotbugsTotalFindingsInReport": 0,
+    "jacocoExclusions": [
+      "com/postech/workshop_service/api/dtos/**",
+      "com/postech/workshop_service/infrastructure/persistence/entities/**",
+      "com/postech/workshop_service/infrastructure/persistence/mappers/*MapperImpl*"
+    ],
+    "jacocoXmlSha256": "098b79bea8450bb5be39b17efd08cda1af6ec016746cfe51e0b0131420aa9016",
+    "scope": "Maven test suite includes unit/context/BDD tests; the cross-service real BDD is separate. SpotBugs is the static quality tool executed in CI."
+  }
+]

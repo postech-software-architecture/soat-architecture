@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "dryRun": false,
+  "scenariosPassed": 1,
+  "stepsPassed": 5,
+  "workflowRunId": "43780849850",
+  "commit": "3e7b8d4faa0a86a7d5ad24cb0db36b51c9bdc8b6",
+  "osId": "ab3bad6d-8ffc-4351-90ff-65e3f30f1cc0",
+  "attemptId": "d637eed0-24e1-45e8-bbf3-9c71474593f1",
+  "trabalhoId": "5b20361b-a999-4818-b2bf-bfe8b152238c",
+  "state": "ENTREGUE",
+  "runId": "43780849850-1",
+  "proofKind": "REAL_TEST_PROVIDER",
+  "at": "2026-11-16T00:33:36.716624+00:00"
+}

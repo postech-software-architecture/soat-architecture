@@ -1,0 +1,25 @@
+flowchart LR
+  C[Cliente ou equipe] --> G[API Gateway publico]
+  G -->|Autenticacao| A[Lambda Auth]
+  G -->|Rotas de negocio e webhook| V[VPC Link]
+  V --> N[NLB interno]
+  N --> X[Proxy de borda no EKS]
+  X --> O[OS e coordenador Saga]
+  X --> B[Billing]
+  X --> E[Execucao]
+  A -->|Identidade privada via borda| O
+  O --> P1[(PostgreSQL OS)]
+  B --> P2[(PostgreSQL Billing)]
+  E --> M[(MongoDB rs0)]
+  O -->|Comandos pela outbox| R[RabbitMQ]
+  R --> B
+  R --> E
+  B -->|Eventos pela outbox| R
+  E -->|Eventos pela outbox| R
+  R -->|Eventos e projecoes| O
+  B -->|Criar consultar cancelar estornar| MP[Mercado Pago de teste]
+  MP -->|Webhook autenticado| G
+  O --> T[OpenTelemetry e coleta de logs]
+  B --> T
+  E --> T
+  T --> NR[New Relic]

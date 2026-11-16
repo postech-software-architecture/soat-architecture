@@ -1,0 +1,16 @@
+{
+  "evidenceSource": "User-provided New Relic screenshot",
+  "recordedAt": "2026-11-15T20:57:32.7113201-03:00",
+  "accountId": "8494357",
+  "query": "SELECT count(*) FROM Span FACET service.name SINCE 60 minutes ago",
+  "timeWindow": "60 minutes",
+  "countsShownRounded": {
+    "execucao-service": "22.8 k",
+    "os-service": "24.5 k",
+    "billing-service": "25.3 k"
+  },
+  "proves": "Recent span ingestion for all three services",
+  "distributedTraceVerified": false,
+  "logsVerified": false,
+  "metricsVerified": false
+}
