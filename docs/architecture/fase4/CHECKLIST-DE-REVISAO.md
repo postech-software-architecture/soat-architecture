@@ -1,3 +1,5 @@
+> **Registro histórico, superado pela validação de 15/11/2026.** O estado atual e as evidências reais estão no [dossiê](README.md), [conferência final](CONFERENCIA-FINAL.md) e [aceite](ACEITE-E-ENTREGA.md). Mercado Pago, cloud e BDD completo já foram exercitados; vídeo/PDF ficaram para o solicitante. As pendências e instruções abaixo descrevem a época deste registro.
+
 # Checklist de revisão dos PRs
 
 Revisão de código e configuração; não marcar uma prova externa como concluída por ler o arquivo. Registrar comentários no PR correspondente e tratar o que for transversal no PR de arquitetura.

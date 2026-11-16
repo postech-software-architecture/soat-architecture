@@ -1,0 +1,44 @@
+[
+  {
+    "repository": "workshop-os-service",
+    "mainRulesetUrl": "https://github.com/postech-software-architecture/workshop-os-service/rules/26895857",
+    "active": true,
+    "pullRequestRequired": true,
+    "requiredCheck": "verify",
+    "strictChecks": true,
+    "forcePushBlocked": true,
+    "deletionBlocked": true,
+    "bypassActors": [],
+    "approvalsRequired": 0,
+    "prodEnvironmentExists": true,
+    "prodHasRequiredReviewers": false
+  },
+  {
+    "repository": "workshop-billing-service",
+    "mainRulesetUrl": "https://github.com/postech-software-architecture/workshop-billing-service/rules/26896322",
+    "active": true,
+    "pullRequestRequired": true,
+    "requiredCheck": "verify",
+    "strictChecks": true,
+    "forcePushBlocked": true,
+    "deletionBlocked": true,
+    "bypassActors": [],
+    "approvalsRequired": 0,
+    "prodEnvironmentExists": true,
+    "prodHasRequiredReviewers": false
+  },
+  {
+    "repository": "workshop-execution-service",
+    "mainRulesetUrl": "https://github.com/postech-software-architecture/workshop-execution-service/rules/26896578",
+    "active": true,
+    "pullRequestRequired": true,
+    "requiredCheck": "verify",
+    "strictChecks": true,
+    "forcePushBlocked": true,
+    "deletionBlocked": true,
+    "bypassActors": [],
+    "approvalsRequired": 0,
+    "prodEnvironmentExists": true,
+    "prodHasRequiredReviewers": false
+  }
+]

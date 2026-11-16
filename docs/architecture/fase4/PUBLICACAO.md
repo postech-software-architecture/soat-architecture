@@ -1,3 +1,5 @@
+> **Registro histórico, superado pela validação de 15/11/2026.** O estado atual e as evidências reais estão no [dossiê](README.md), [conferência final](CONFERENCIA-FINAL.md) e [aceite](ACEITE-E-ENTREGA.md). Mercado Pago, cloud e BDD completo já foram exercitados; vídeo/PDF ficaram para o solicitante. As pendências e instruções abaixo descrevem a época deste registro.
+
 # Publicação e revisão
 
 O pacote local publicacao-github-academy.zip contém o guia completo, os quatro projetos novos, os overlays dos dois repos existentes e as seis descrições de PR. Ele substitui a exportação anterior.

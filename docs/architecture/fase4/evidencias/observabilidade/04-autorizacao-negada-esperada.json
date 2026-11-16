@@ -1,0 +1,21 @@
+{
+  "evidenceSource": [
+    "User-provided New Relic error screenshot",
+    "05-preparacao-estorno.json",
+    "05-saga-estorno.postman_collection.json"
+  ],
+  "traceId": "453f2c1e17da4d6c87b0108efbdee0b3",
+  "service": "execucao-service",
+  "operation": "POST /api/v1/trabalhos/{id}/diagnostico/iniciar",
+  "description": "Access is denied",
+  "expectedNegativeTest": "06 Cliente nao pode executar diagnostico",
+  "customerHttpStatus": 403,
+  "mechanicHttpStatus": 200,
+  "assertionPassed": true,
+  "visibleErroredSpanNames": [
+    "secured request",
+    "authorize method"
+  ],
+  "interpretation": "Two errored instrumentation spans are visible within the same denied request. The collection intentionally uses customer_token for the 403 control and mechanic_token for the successful request; no permission relaxation is needed.",
+  "logsIngestionVerified": false
+}

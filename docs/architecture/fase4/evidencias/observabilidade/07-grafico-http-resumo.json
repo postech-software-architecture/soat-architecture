@@ -1,0 +1,34 @@
+{
+  "evidenceSource": "User-provided New Relic JSON result and chart screenshot",
+  "accountId": 8494357,
+  "windowBeginUtc": "2026-11-15T23:13:23Z",
+  "windowEndUtc": "2026-11-16T00:13:23Z",
+  "bucketSeconds": 300,
+  "metric": "http.server.requests",
+  "unit": "requests per minute",
+  "services": {
+    "os-service": {
+      "meanRequestsPerMinute": 68.68333333333334,
+      "minRequestsPerMinute": 38,
+      "maxRequestsPerMinute": 106.8,
+      "buckets": 12
+    },
+    "execucao-service": {
+      "meanRequestsPerMinute": 43.233333333333334,
+      "minRequestsPerMinute": 28,
+      "maxRequestsPerMinute": 60.6,
+      "buckets": 12
+    },
+    "billing-service": {
+      "meanRequestsPerMinute": 39.25,
+      "minRequestsPerMinute": 24,
+      "maxRequestsPerMinute": 49.8,
+      "buckets": 12
+    }
+  },
+  "httpMetricDataVerifiedForThreeServices": true,
+  "chartCaptured": true,
+  "includesHealthEndpoints": true,
+  "loadTestPerformed": false,
+  "interpretation": "Rates are averaged over 5-minute buckets. Counts include health checks and other HTTP endpoints. They do not measure completed orders or establish latency, capacity, or an SLO. JSON and screenshot are separate query snapshots."
+}

@@ -1,0 +1,21 @@
+{
+  "evidenceSource": "User-supplied New Relic timeline screenshot",
+  "traceId": "453f2c1e17da4d6c87b0108efbdee0b3",
+  "spans": 595,
+  "entities": 3,
+  "fragmented": true,
+  "missingParentHttpSpansVisible": true,
+  "crossServiceConsumerChainVisible": true,
+  "visibleChain": [
+    "os-service: http post /api/v1/ordens-servico",
+    "execucao-service: execucao-service.inbox receive",
+    "os-service: os-service.inbox receive"
+  ],
+  "spanLinksCountDisplayed": 0,
+  "errorsDisplayed": 2,
+  "errorDetailsVerified": false,
+  "associatedLogsDisplayed": 0,
+  "globalLogIngestionVerified": false,
+  "traceDurationDisplayed": "10 min 44 s",
+  "interpretation": "Visible nested consumer spans support cross-service messaging continuity for this segment. Multiple collection requests reused the client trace ID; duration is not latency of a single HTTP request. Client-created parent spans were not exported, a plausible explanation for missing HTTP parents; do not assume this explains every fragmentation warning."
+}

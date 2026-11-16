@@ -1,5 +1,7 @@
 # Arquitetura — Fase 3
 
+> **Estado vigente — Fase 4, 15/11/2026:** [dossiê e evidências](fase4/README.md), [arquitetura](fase4/ARQUITETURA-E-SAGA.md), [conferência final](fase4/CONFERENCIA-FINAL.md) e [retomada](fase4/RETOMADA.md). As ondas e estados abaixo são histórico da Fase 3. Vídeo/PDF da Fase 4 permanecem com o solicitante para o dia seguinte.
+
 > **[ESTADO.md](ESTADO.md)** — estado executado, pendencias reais e proximo gate.
 
 Indice central da documentacao arquitetural dos quatro repositorios da entrega.

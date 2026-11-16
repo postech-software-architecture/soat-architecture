@@ -1,0 +1,23 @@
+{
+  "osId": "ab3bad6d-8ffc-4351-90ff-65e3f30f1cc0",
+  "osNumber": "OS-2026-00011",
+  "attemptId": "d637eed0-24e1-45e8-bbf3-9c71474593f1",
+  "trabalhoId": "5b20361b-a999-4818-b2bf-bfe8b152238c",
+  "approvedBudgetId": "fdac25bf-00ef-4763-8136-0630333303c0",
+  "paymentId": "be3e609a-e959-4c52-b89a-08f60433dbd0",
+  "providerOrderId": "ORDTST01M7GW96D24ZJVA8FWECB1P91A",
+  "amountCents": 28625,
+  "currency": "BRL",
+  "runId": "43780849850-1",
+  "at": "2026-11-16T00:32:02.672853+00:00",
+  "checkedAt": "2026-11-16T00:34:12.655657+00:00",
+  "readOnly": true,
+  "osState": "ENTREGUE",
+  "workState": "CONCLUIDO",
+  "paymentState": "CONFIRMADO",
+  "providerStatus": "processed",
+  "providerStatusDetail": "accredited",
+  "testSellerVerified": true,
+  "sameBusinessContextAndProviderBinding": true,
+  "deliveredWithRealTestPayment": true
+}
